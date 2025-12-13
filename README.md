@@ -1,8 +1,9 @@
 # Meta Ads Creative Performance Dashboard
 
 
+
 <p align="center">
-	<video src="assets/Design%20sem%20nome%20(1).mp4" autoplay loop muted playsinline width="700"></video>
+  <img src="assets/dash.gif" alt="Demonstração do Dashboard" width="700" />
 </p>
 
 > **Dashboard profissional para análise de campanhas Meta Ads, com relatórios completos de Marketing Science, KPIs, recomendações e insights automatizados.**
