@@ -1,3 +1,8 @@
+# Demonstração
+
+<p align="center">
+	<img src="assets/dash.gif" alt="Demonstração do Dashboard" width="700" />
+</p>
 # Meta Ads Creative Performance Dashboard
 
 
