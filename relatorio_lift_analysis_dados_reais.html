@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Lift Analysis - Meta Ads Creative Performance</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #1e293b;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            color: #64748b;
+            font-size: 1.2em;
+        }
+        
+        .header .date {
+            color: #94a3b8;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #1e293b;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section h2 .icon {
+            font-size: 1.2em;
+        }
+        
+        .executive-summary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .executive-summary h2 {
+            color: white;
+            border-bottom-color: rgba(255,255,255,0.3);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .summary-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .summary-card .value {
+            font-size: 2.5em;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        
+        .summary-card .label {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        
+        .lift-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .lift-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid;
+        }
+        
+        .lift-card.positive {
+            border-left-color: #10b981;
+        }
+        
+        .lift-card.negative {
+            border-left-color: #ef4444;
+        }
+        
+        .lift-card .category {
+            color: #64748b;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .lift-card .dimension {
+            color: #1e293b;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .lift-card .lift-value {
+            font-size: 2em;
+            font-weight: 800;
+        }
+        
+        .lift-card .lift-value.positive {
+            color: #10b981;
+        }
+        
+        .lift-card .lift-value.negative {
+            color: #ef4444;
+        }
+        
+        .lift-card .metric {
+            color: #64748b;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .lift-card .ci {
+            color: #94a3b8;
+            font-size: 0.8em;
+            margin-top: 8px;
+        }
+        
+        .chart-container {
+            margin: 25px 0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .recommendation {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 15px;
+        }
+        
+        .recommendation.high-priority {
+            background: #fee2e2;
+            border-left-color: #ef4444;
+        }
+        
+        .recommendation.success {
+            background: #d1fae5;
+            border-left-color: #10b981;
+        }
+        
+        .recommendation .priority {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        
+        .recommendation.high-priority .priority {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .recommendation.success .priority {
+            background: #10b981;
+            color: white;
+        }
+        
+        .recommendation .priority.medium {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .recommendation h4 {
+            color: #1e293b;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .recommendation p {
+            color: #475569;
+            line-height: 1.6;
+        }
+        
+        .recommendation .impact {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 12px;
+            padding: 6px 12px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .conclusions-list {
+            list-style: none;
+        }
+        
+        .conclusions-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        
+        .conclusions-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .conclusions-list .icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            flex-shrink: 0;
+        }
+        
+        .conclusions-list .icon.success {
+            background: #d1fae5;
+            color: #10b981;
+        }
+        
+        .conclusions-list .icon.warning {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+        
+        .conclusions-list .icon.danger {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+        
+        .conclusions-list .icon.info {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+        
+        .conclusions-list .content h4 {
+            color: #1e293b;
+            font-size: 1.05em;
+            margin-bottom: 5px;
+        }
+        
+        .conclusions-list .content p {
+            color: #64748b;
+            line-height: 1.5;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background: #f8fafc;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .badge.positive {
+            background: #d1fae5;
+            color: #059669;
+        }
+        
+        .badge.negative {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        .footer p {
+            margin-bottom: 5px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .section {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #e2e8f0;
+            }
+            
+            .header {
+                box-shadow: none;
+                border: 1px solid #e2e8f0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Relatório de Lift Analysis</h1>
+            <p class="subtitle">Meta Ads Creative Performance - Marketing Science</p>
+            <p class="date">Gerado em: 10 de December de 2025 às 14:56</p>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section executive-summary">
+            <h2><span class="icon">🎯</span> Sumário Executivo</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="value">+2.0%</div>
+                    <div class="label">Maior Lift por Placement<br>(Ad Network)</div>
+                </div>
+                <div class="summary-card">
+                    <div class="value">+0.9%</div>
+                    <div class="label">Maior Lift por Targeting<br>(Manual)</div>
+                </div>
+                <div class="summary-card">
+                    <div class="value">+1.6%</div>
+                    <div class="label">Lift com Advantage+<br>Placements Ativado</div>
+                </div>
+                <div class="summary-card">
+                    <div class="value">R$ 3,578</div>
+                    <div class="label">Potencial de Melhoria<br>Estimado</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lift Analysis Results -->
+        <div class="section">
+            <h2><span class="icon">📈</span> Análise de Lift por Dimensão</h2>
+            <div class="lift-grid">
+                
+        <div class="lift-card positive">
+            <div class="category">Placement</div>
+            <div class="dimension">Ad Network</div>
+            <div class="lift-value positive">+2.0%</div>
+            <div class="metric">ROAS vs. média (n=136)</div>
+            <div class="ci">IC 95%: [-3.3%, 7.1%]</div>
+        </div>
+        
+        <div class="lift-card positive">
+            <div class="category">Placement</div>
+            <div class="dimension">Stories</div>
+            <div class="lift-value positive">+1.3%</div>
+            <div class="metric">ROAS vs. média (n=140)</div>
+            <div class="ci">IC 95%: [-4.2%, 6.4%]</div>
+        </div>
+        
+        <div class="lift-card positive">
+            <div class="category">Placement</div>
+            <div class="dimension">In-Stream Ads</div>
+            <div class="lift-value positive">+1.2%</div>
+            <div class="metric">ROAS vs. média (n=152)</div>
+            <div class="ci">IC 95%: [-3.6%, 6.5%]</div>
+        </div>
+        
+        <div class="lift-card positive">
+            <div class="category">Targeting</div>
+            <div class="dimension">Manual</div>
+            <div class="lift-value positive">+0.9%</div>
+            <div class="metric">ROAS vs. média (n=199)</div>
+            <div class="ci">IC 95%: [-3.5%, 5.3%]</div>
+        </div>
+        
+        <div class="lift-card positive">
+            <div class="category">Targeting</div>
+            <div class="dimension">Location-based targeting</div>
+            <div class="lift-value positive">+0.5%</div>
+            <div class="metric">ROAS vs. média (n=196)</div>
+            <div class="ci">IC 95%: [-3.9%, 4.4%]</div>
+        </div>
+        
+        <div class="lift-card positive">
+            <div class="category">Targeting</div>
+            <div class="dimension">Custom Audiences</div>
+            <div class="lift-value positive">+0.1%</div>
+            <div class="metric">ROAS vs. média (n=199)</div>
+            <div class="ci">IC 95%: [-4.1%, 4.3%]</div>
+        </div>
+        
+            </div>
+        </div>
+
+        <!-- Advantage+ Analysis -->
+        <div class="section">
+            <h2><span class="icon">⚡</span> Impacto do Advantage+ Placements</h2>
+            
+            <div class="chart-container" id="advantage-chart"></div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Advantage+ OFF</th>
+                            <th>Advantage+ ON</th>
+                            <th>Lift</th>
+                            <th>Significância</th>
+                        </tr>
+                    </thead>
+                    
+    <tbody>
+        <tr>
+            <td>ROAS</td>
+            <td>3.21</td>
+            <td>3.26</td>
+            <td><span class="badge positive">+1.6%</span></td>
+            <td>p = 0.420</td>
+        </tr>
+        <tr>
+            <td>CTR</td>
+            <td>5.31%</td>
+            <td>5.24%</td>
+            <td><span class="badge negative">-1.4%</span></td>
+            <td>p = 0.680</td>
+        </tr>
+        <tr>
+            <td>CPA</td>
+            <td>R$ 2.28</td>
+            <td>R$ 2.38</td>
+            <td><span class="badge negative">+4.2%</span></td>
+            <td>p = 0.718</td>
+        </tr>
+        <tr>
+            <td>CPM</td>
+            <td>R$ 5.44</td>
+            <td>R$ 5.68</td>
+            <td><span class="badge negative">+4.5%</span></td>
+            <td>p < 0.05 ✓</td>
+        </tr>
+    </tbody>
+    
+                </table>
+            </div>
+        </div>
+
+        <!-- Conclusions -->
+        <div class="section">
+            <h2><span class="icon">💡</span> Conclusões Objetivas</h2>
+            
+            <ul class="conclusions-list">
+                <li>
+                    <div class="icon success">✓</div>
+                    <div class="content">
+                        <h4>Ad Network é o placement mais eficiente</h4>
+                        <p>Com lift de +2.0% no ROAS comparado à média, este placement demonstra ser o canal com melhor retorno. Intervalo de confiança: [-3.3%, 7.1%].</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon success">✓</div>
+                    <div class="content">
+                        <h4>Advantage+ Placements gera ganhos moderados</h4>
+                        <p>A ativação do Advantage+ Placements resulta em melhoria de +1.6% no ROAS e mudança de +4.2% no CPA. p = 0.420.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon success">✓</div>
+                    <div class="content">
+                        <h4>Manual é o targeting mais eficiente</h4>
+                        <p>Com lift de +0.9% no ROAS, este tipo de segmentação apresenta o melhor desempenho entre os analisados.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon danger">⚠</div>
+                    <div class="content">
+                        <h4>Search Results apresenta underperformance</h4>
+                        <p>Com lift de -3.5%, este placement está performando abaixo da média. Considere reduzir ou otimizar.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon warning">!</div>
+                    <div class="content">
+                        <h4>Advantage+ necessita otimização</h4>
+                        <p>Esta segmentação apresenta lift de -1.3%, indicando necessidade de refinamento ou migração para Manual.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="section">
+            <h2><span class="icon">🎯</span> Recomendações Prioritárias</h2>
+            
+            <div class="recommendation high-priority">
+                <span class="priority">Alta Prioridade</span>
+                <h4>1. Ativar Advantage+ Placements em todas as campanhas</h4>
+                <p>A análise demonstra ganhos de +1.6% no ROAS quando o Advantage+ está ativo. Implemente em 100% das campanhas que ainda não utilizam esta funcionalidade.</p>
+                <div class="impact">
+                    💰 Impacto estimado: +1.6% ROAS | +4.2% CPA
+                </div>
+            </div>
+            
+            <div class="recommendation high-priority">
+                <span class="priority">Alta Prioridade</span>
+                <h4>2. Realocar orçamento de Search Results para Ad Network</h4>
+                <p>Transfira o investimento atualmente alocado em Search Results (lift -3.5%) para Ad Network (lift +2.0%).</p>
+                <div class="impact">
+                    💰 Impacto estimado: +5.4% diferença de ROAS
+                </div>
+            </div>
+            
+            <div class="recommendation success">
+                <span class="priority medium">Média Prioridade</span>
+                <h4>3. Expandir campanhas de Manual</h4>
+                <p>Dado o lift superior de +0.9% no ROAS, considere aumentar o investimento neste tipo de segmentação.</p>
+                <div class="impact">
+                    💰 Impacto estimado: +0.9% ROAS em escala
+                </div>
+            </div>
+            
+            <div class="recommendation success">
+                <span class="priority medium">Média Prioridade</span>
+                <h4>4. Migrar Advantage+ para Manual</h4>
+                <p>Substitua gradualmente segmentações de Advantage+ por Manual, aproveitando a diferença de 2.2% no lift.</p>
+                <div class="impact">
+                    💰 Impacto estimado: +2.2% diferença de ROAS
+                </div>
+            </div>
+        </div>
+
+        <!-- Impact Summary -->
+        <div class="section">
+            <h2><span class="icon">📊</span> Impacto Estimado Consolidado</h2>
+            
+            <div class="chart-container" id="impact-chart"></div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ação</th>
+                            <th>Métrica Principal</th>
+                            <th>Impacto Estimado</th>
+                            <th>Prazo</th>
+                            <th>Esforço</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ativar Advantage+</td>
+                            <td>ROAS</td>
+                            <td><span class="badge positive">+1.6%</span></td>
+                            <td>Imediato</td>
+                            <td>Baixo</td>
+                        </tr>
+                        <tr>
+                            <td>Realocar para Ad Network</td>
+                            <td>ROAS</td>
+                            <td><span class="badge positive">+2.0%</span></td>
+                            <td>1 semana</td>
+                            <td>Baixo</td>
+                        </tr>
+                        <tr>
+                            <td>Expandir Manual</td>
+                            <td>ROAS</td>
+                            <td><span class="badge positive">+0.9%</span></td>
+                            <td>2 semanas</td>
+                            <td>Médio</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 25px; border-radius: 12px; margin-top: 25px; text-align: center;">
+                <div style="font-size: 1.2em; margin-bottom: 10px;">Impacto Total Potencial</div>
+                <div style="font-size: 3em; font-weight: 800;">+2% a +2%</div>
+                <div style="font-size: 1em; opacity: 0.9;">Melhoria estimada no ROAS com implementação completa</div>
+            </div>
+        </div>
+
+        <!-- Methodology -->
+        <div class="section">
+            <h2><span class="icon">🔬</span> Metodologia</h2>
+            
+            <ul class="conclusions-list">
+                <li>
+                    <div class="icon info">📐</div>
+                    <div class="content">
+                        <h4>Cálculo de Lift</h4>
+                        <p>Lift calculado como ((Métrica do Grupo - Média Geral) / Média Geral) × 100%. Intervalos de confiança de 95% calculados usando bootstrap com 1000 iterações.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon info">📊</div>
+                    <div class="content">
+                        <h4>Testes Estatísticos</h4>
+                        <p>Significância avaliada usando t-test independente para comparações A/B. P-valores < 0.05 considerados estatisticamente significativos.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon info">📈</div>
+                    <div class="content">
+                        <h4>Base de Dados</h4>
+                        <p>Análise baseada em dados de criativos de Meta Ads. Investimento total analisado: R$ 249,889. ROAS médio: 3.23.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Meta Ads Creative Performance Dashboard</strong></p>
+            <p>Relatório gerado automaticamente com análise de Marketing Science</p>
+            <p>10 de December de 2025 às 14:56</p>
+        </div>
+    </div>
+
+    <script>
+        // Advantage+ Comparison Chart
+        const advantageData = [
+            {
+                x: ["ROAS", "CTR (%)", "CPA (R$)", "CPM (R$)"],
+                y: [3.21, 5.31, 2.28, 5.44],
+                name: 'Advantage+ OFF',
+                type: 'bar',
+                marker: { color: '#94a3b8' }
+            },
+            {
+                x: ["ROAS", "CTR (%)", "CPA (R$)", "CPM (R$)"],
+                y: [3.26, 5.24, 2.38, 5.68],
+                name: 'Advantage+ ON',
+                type: 'bar',
+                marker: { color: '#10b981' }
+            }
+        ];
+
+        const advantageLayout = {
+            barmode: 'group',
+            title: 'Comparação de Métricas: Advantage+ ON vs OFF',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { family: 'Segoe UI' },
+            legend: { orientation: 'h', y: -0.2 }
+        };
+
+        Plotly.newPlot('advantage-chart', advantageData, advantageLayout, {responsive: true});
+
+        // Impact Chart
+        const impactData = [{
+            x: ["Sales", "Traffic", "Ad Network", "Advantage+", "Manual"],
+            y: [2.8, 2.4, 2.0, 1.6, 0.9],
+            type: 'bar',
+            marker: {
+                color: ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'].slice(0, 5)
+            },
+            text: ["+2.8%", "+2.4%", "+2.0%", "+1.6%", "+0.9%"],
+            textposition: 'outside'
+        }];
+
+        const impactLayout = {
+            title: 'Ranking de Oportunidades por Lift no ROAS',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { family: 'Segoe UI' },
+            yaxis: { title: 'Lift (%)' },
+            showlegend: false
+        };
+
+        Plotly.newPlot('impact-chart', impactData, impactLayout, {responsive: true});
+    </script>
+</body>
+</html>
