@@ -2,19 +2,13 @@
 
 
 
-<p align="center">
-  <img src="assets/dash.gif" alt="Demonstração do Dashboard" width="700" />
-</p>
+
 
 > **Dashboard profissional para análise de campanhas Meta Ads, com relatórios completos de Marketing Science, KPIs, recomendações e insights automatizados.**
 
 ---
 
-## Demonstração em Vídeo
 
-O vídeo abaixo mostra o dashboard em funcionamento, rodando em loop:
-
----
 
 ## Recursos Principais
 
@@ -40,8 +34,7 @@ O vídeo abaixo mostra o dashboard em funcionamento, rodando em loop:
 	```sh
 	python dashboard_complete.py
 	```
-4. Acesse no navegador:
-	[http://127.0.0.1:8050](http://127.0.0.1:8050)
+
 
 ## Estrutura
 
