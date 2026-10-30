@@ -1,7 +1,4 @@
-"""
-Gerador de Relatório de Lift Analysis
-Gera um relatório HTML completo com dados reais do CSV
-"""
+"""Gera o relatório HTML de lift por placement, público e objetivo em reports/."""
 
 import pandas as pd
 import numpy as np
@@ -48,17 +45,17 @@ def perform_ttest(group1, group2):
 def format_p_value(p):
     """Formata p-value para exibição"""
     if p < 0.001:
-        return "p < 0.001 ✓"
+        return "p < 0.001 "
     elif p < 0.01:
-        return "p < 0.01 ✓"
+        return "p < 0.01 "
     elif p < 0.05:
-        return "p < 0.05 ✓"
+        return "p < 0.05 "
     else:
         return f"p = {p:.3f}"
 
 
 def generate_lift_report(csv_path, output_path):
-    """Gera o relatório de Lift Analysis usando dados reais processados"""
+    """Gera o relatório de lift a partir da base processada."""
     
     # Usar data_processor para garantir métricas consistentes
     df = load_and_process_data(csv_path)
@@ -176,12 +173,12 @@ def generate_lift_report(csv_path, output_path):
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
-    print(f"✅ Relatório gerado com sucesso: {output_path}")
-    print(f"\n📊 Resumo:")
+    print(f"Relatório gerado com sucesso: {output_path}")
+    print(f"\nResumo:")
     print(f"   - Melhor Placement: {best_placement['dimension']} (Lift: {best_placement['lift']:+.1f}%)")
     print(f"   - Melhor Targeting: {best_targeting['dimension']} (Lift: {best_targeting['lift']:+.1f}%)")
     print(f"   - Advantage+ ROAS Lift: {results['advantage']['ROAS']['lift']:+.1f}%")
-    print(f"   - Potencial de melhoria: R$ {potential_savings:,.0f}")
+    print(f"   - Potencial de melhoria: US$ {potential_savings:,.0f}")
     
     return results
 
@@ -244,15 +241,15 @@ def generate_html(results, best_placement, worst_placement,
         </tr>
         <tr>
             <td>CPA</td>
-            <td>R$ {adv['CPA']['no']:.2f}</td>
-            <td>R$ {adv['CPA']['yes']:.2f}</td>
+            <td>US$ {adv['CPA']['no']:.2f}</td>
+            <td>US$ {adv['CPA']['yes']:.2f}</td>
             <td><span class="badge {'positive' if adv['CPA']['lift'] < 0 else 'negative'}">{adv['CPA']['lift']:+.1f}%</span></td>
             <td>{adv['CPA']['p_formatted']}</td>
         </tr>
         <tr>
             <td>CPM</td>
-            <td>R$ {adv['CPM']['no']:.2f}</td>
-            <td>R$ {adv['CPM']['yes']:.2f}</td>
+            <td>US$ {adv['CPM']['no']:.2f}</td>
+            <td>US$ {adv['CPM']['yes']:.2f}</td>
             <td><span class="badge {'positive' if adv['CPM']['lift'] < 0 else 'negative'}">{adv['CPM']['lift']:+.1f}%</span></td>
             <td>{adv['CPM']['p_formatted']}</td>
         </tr>
@@ -261,7 +258,7 @@ def generate_html(results, best_placement, worst_placement,
     
     # Preparar dados para gráficos
     advantage_chart_data = {
-        'metrics': ['ROAS', 'CTR (%)', 'CPA (R$)', 'CPM (R$)'],
+        'metrics': ['ROAS', 'CTR (%)', 'CPA (US$)', 'CPM (US$)'],
         'off': [adv['ROAS']['no'], adv['CTR']['no'], adv['CPA']['no'], adv['CPM']['no']],
         'on': [adv['ROAS']['yes'], adv['CTR']['yes'], adv['CPA']['yes'], adv['CPM']['yes']]
     }
@@ -671,14 +668,14 @@ def generate_html(results, best_placement, worst_placement,
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>📊 Relatório de Lift Analysis</h1>
+            <h1>Relatório de Lift Analysis</h1>
             <p class="subtitle">Meta Ads Creative Performance - Marketing Science</p>
             <p class="date">Gerado em: {now}</p>
         </div>
 
         <!-- Executive Summary -->
         <div class="section executive-summary">
-            <h2><span class="icon">🎯</span> Sumário Executivo</h2>
+            <h2><span class="icon"></span> Sumário Executivo</h2>
             <div class="summary-grid">
                 <div class="summary-card">
                     <div class="value">{best_placement['lift']:+.1f}%</div>
@@ -693,7 +690,7 @@ def generate_html(results, best_placement, worst_placement,
                     <div class="label">Lift com Advantage+<br>Placements Ativado</div>
                 </div>
                 <div class="summary-card">
-                    <div class="value">R$ {potential_savings:,.0f}</div>
+                    <div class="value">US$ {potential_savings:,.0f}</div>
                     <div class="label">Potencial de Melhoria<br>Estimado</div>
                 </div>
             </div>
@@ -701,7 +698,7 @@ def generate_html(results, best_placement, worst_placement,
 
         <!-- Lift Analysis Results -->
         <div class="section">
-            <h2><span class="icon">📈</span> Análise de Lift por Dimensão</h2>
+            <h2><span class="icon"></span> Análise de Lift por Dimensão</h2>
             <div class="lift-grid">
                 {lift_cards_html}
             </div>
@@ -709,7 +706,7 @@ def generate_html(results, best_placement, worst_placement,
 
         <!-- Advantage+ Analysis -->
         <div class="section">
-            <h2><span class="icon">⚡</span> Impacto do Advantage+ Placements</h2>
+            <h2><span class="icon"></span> Impacto do Advantage+ Placements</h2>
             
             <div class="chart-container" id="advantage-chart"></div>
             
@@ -731,32 +728,32 @@ def generate_html(results, best_placement, worst_placement,
 
         <!-- Conclusions -->
         <div class="section">
-            <h2><span class="icon">💡</span> Conclusões Objetivas</h2>
+            <h2><span class="icon"></span> Conclusões Objetivas</h2>
             
             <ul class="conclusions-list">
                 <li>
-                    <div class="icon success">✓</div>
+                    <div class="icon success"></div>
                     <div class="content">
                         <h4>{best_placement['dimension']} é o placement mais eficiente</h4>
                         <p>Com lift de {best_placement['lift']:+.1f}% no ROAS comparado à média, este placement demonstra ser o canal com melhor retorno. Intervalo de confiança: [{best_placement['ci_lower']:.1f}%, {best_placement['ci_upper']:.1f}%].</p>
                     </div>
                 </li>
                 <li>
-                    <div class="icon success">✓</div>
+                    <div class="icon success"></div>
                     <div class="content">
                         <h4>Advantage+ Placements gera ganhos {'significativos' if adv['ROAS']['lift'] > 10 else 'moderados'}</h4>
                         <p>A ativação do Advantage+ Placements resulta em melhoria de {adv['ROAS']['lift']:+.1f}% no ROAS e mudança de {adv['CPA']['lift']:+.1f}% no CPA. {adv['ROAS']['p_formatted']}.</p>
                     </div>
                 </li>
                 <li>
-                    <div class="icon success">✓</div>
+                    <div class="icon success"></div>
                     <div class="content">
                         <h4>{best_targeting['dimension']} é o targeting mais eficiente</h4>
                         <p>Com lift de {best_targeting['lift']:+.1f}% no ROAS, este tipo de segmentação apresenta o melhor desempenho entre os analisados.</p>
                     </div>
                 </li>
                 <li>
-                    <div class="icon danger">⚠</div>
+                    <div class="icon danger"></div>
                     <div class="content">
                         <h4>{worst_placement['dimension']} apresenta underperformance</h4>
                         <p>Com lift de {worst_placement['lift']:+.1f}%, este placement está performando abaixo da média. Considere reduzir ou otimizar.</p>
@@ -774,14 +771,14 @@ def generate_html(results, best_placement, worst_placement,
 
         <!-- Recommendations -->
         <div class="section">
-            <h2><span class="icon">🎯</span> Recomendações Prioritárias</h2>
+            <h2><span class="icon"></span> Recomendações Prioritárias</h2>
             
             <div class="recommendation high-priority">
                 <span class="priority">Alta Prioridade</span>
                 <h4>1. Ativar Advantage+ Placements em todas as campanhas</h4>
                 <p>A análise demonstra ganhos de {adv['ROAS']['lift']:+.1f}% no ROAS quando o Advantage+ está ativo. Implemente em 100% das campanhas que ainda não utilizam esta funcionalidade.</p>
                 <div class="impact">
-                    💰 Impacto estimado: {adv['ROAS']['lift']:+.1f}% ROAS | {adv['CPA']['lift']:+.1f}% CPA
+                    Impacto estimado: {adv['ROAS']['lift']:+.1f}% ROAS | {adv['CPA']['lift']:+.1f}% CPA
                 </div>
             </div>
             
@@ -790,7 +787,7 @@ def generate_html(results, best_placement, worst_placement,
                 <h4>2. Realocar orçamento de {worst_placement['dimension']} para {best_placement['dimension']}</h4>
                 <p>Transfira o investimento atualmente alocado em {worst_placement['dimension']} (lift {worst_placement['lift']:+.1f}%) para {best_placement['dimension']} (lift {best_placement['lift']:+.1f}%).</p>
                 <div class="impact">
-                    💰 Impacto estimado: {placement_diff:+.1f}% diferença de ROAS
+                    Impacto estimado: {placement_diff:+.1f}% diferença de ROAS
                 </div>
             </div>
             
@@ -799,7 +796,7 @@ def generate_html(results, best_placement, worst_placement,
                 <h4>3. Expandir campanhas de {best_targeting['dimension']}</h4>
                 <p>Dado o lift superior de {best_targeting['lift']:+.1f}% no ROAS, considere aumentar o investimento neste tipo de segmentação.</p>
                 <div class="impact">
-                    💰 Impacto estimado: {best_targeting['lift']:+.1f}% ROAS em escala
+                    Impacto estimado: {best_targeting['lift']:+.1f}% ROAS em escala
                 </div>
             </div>
             
@@ -808,14 +805,14 @@ def generate_html(results, best_placement, worst_placement,
                 <h4>4. Migrar {worst_targeting['dimension']} para {best_targeting['dimension']}</h4>
                 <p>Substitua gradualmente segmentações de {worst_targeting['dimension']} por {best_targeting['dimension']}, aproveitando a diferença de {targeting_diff:.1f}% no lift.</p>
                 <div class="impact">
-                    💰 Impacto estimado: {targeting_diff:+.1f}% diferença de ROAS
+                    Impacto estimado: {targeting_diff:+.1f}% diferença de ROAS
                 </div>
             </div>
         </div>
 
         <!-- Impact Summary -->
         <div class="section">
-            <h2><span class="icon">📊</span> Impacto Estimado Consolidado</h2>
+            <h2><span class="icon"></span> Impacto Estimado Consolidado</h2>
             
             <div class="chart-container" id="impact-chart"></div>
             
@@ -865,28 +862,28 @@ def generate_html(results, best_placement, worst_placement,
 
         <!-- Methodology -->
         <div class="section">
-            <h2><span class="icon">🔬</span> Metodologia</h2>
+            <h2><span class="icon"></span> Metodologia</h2>
             
             <ul class="conclusions-list">
                 <li>
-                    <div class="icon info">📐</div>
+                    <div class="icon info"></div>
                     <div class="content">
                         <h4>Cálculo de Lift</h4>
                         <p>Lift calculado como ((Métrica do Grupo - Média Geral) / Média Geral) × 100%. Intervalos de confiança de 95% calculados usando bootstrap com 1000 iterações.</p>
                     </div>
                 </li>
                 <li>
-                    <div class="icon info">📊</div>
+                    <div class="icon info"></div>
                     <div class="content">
                         <h4>Testes Estatísticos</h4>
                         <p>Significância avaliada usando t-test independente para comparações A/B. P-valores < 0.05 considerados estatisticamente significativos.</p>
                     </div>
                 </li>
                 <li>
-                    <div class="icon info">📈</div>
+                    <div class="icon info"></div>
                     <div class="content">
                         <h4>Base de Dados</h4>
-                        <p>Análise baseada em dados de criativos de Meta Ads. Investimento total analisado: R$ {total_spend:,.0f}. ROAS médio: {avg_roas:.2f}.</p>
+                        <p>Análise baseada em dados de criativos de Meta Ads. Investimento total analisado: US$ {total_spend:,.0f}. ROAS médio: {avg_roas:.2f}.</p>
                     </div>
                 </li>
             </ul>

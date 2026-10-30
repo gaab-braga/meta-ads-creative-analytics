@@ -1,7 +1,4 @@
-"""
-Módulo de carregamento e processamento de dados
-Meta Ads Creative Performance Dashboard
-"""
+"""Carga do CSV, métricas derivadas (CTR, CPC, CPM, CPA, receita simulada e ROAS) e resumos do painel."""
 
 import pandas as pd
 import numpy as np
@@ -240,7 +237,7 @@ def generate_insights(df, metrics, patterns):
         'category': 'Visão Geral',
         'insight': f"O portfólio possui {metrics['total_creatives']} creatives, com {metrics['active_creatives']} ativos. "
                    f"O investimento total foi de ${metrics['total_spend']:,.0f}, gerando {metrics['total_conversions']:,.0f} conversões.",
-        'icon': '📊'
+        'icon': ''
     })
     
     # Insight de ROAS
@@ -248,7 +245,7 @@ def generate_insights(df, metrics, patterns):
         'category': 'Retorno sobre Investimento',
         'insight': f"O ROAS geral é de {metrics['overall_roas']:.2f}x, significando que para cada $1 investido, "
                    f"há um retorno de ${metrics['overall_roas']:.2f}. Os top performers alcançam ROAS de {patterns['avg_roas']:.2f}x.",
-        'icon': '💰'
+        'icon': ''
     })
     
     # Insight de CTR
@@ -259,7 +256,7 @@ def generate_insights(df, metrics, patterns):
         'category': 'Engajamento',
         'insight': f"O CTR médio é de {avg_ctr:.2f}%, {ctr_status} do benchmark típico de {ctr_benchmark}%. "
                    f"Os top creatives têm CTR de {patterns['avg_ctr']:.2f}%.",
-        'icon': '🎯'
+        'icon': ''
     })
     
     # Insight de Placements
@@ -267,7 +264,7 @@ def generate_insights(df, metrics, patterns):
         'category': 'Placements',
         'insight': f"O placement mais eficiente é '{patterns['top_placement']}'. "
                    f"{patterns['advantage_placements']:.0f}% dos top creatives usam Advantage+ Placements.",
-        'icon': '📍'
+        'icon': ''
     })
     
     # Insight de Targeting
@@ -275,7 +272,7 @@ def generate_insights(df, metrics, patterns):
         'category': 'Targeting',
         'insight': f"O targeting '{patterns['top_targeting']}' é predominante entre os melhores creatives. "
                    f"A estratégia de targeting deve priorizar esta abordagem.",
-        'icon': '🎪'
+        'icon': ''
     })
     
     # Insight de Frequency
@@ -284,7 +281,7 @@ def generate_insights(df, metrics, patterns):
         'insight': f"A frequência média é de {metrics['avg_frequency']:.2f}. "
                    f"Os top creatives mantêm frequência de {patterns['avg_frequency']:.2f}, indicando "
                    f"{'controle adequado' if patterns['avg_frequency'] < 2 else 'possível saturação'}.",
-        'icon': '🔄'
+        'icon': ''
     })
     
     # Insight de Custo
@@ -292,7 +289,7 @@ def generate_insights(df, metrics, patterns):
         'category': 'Eficiência de Custo',
         'insight': f"O CPA médio é de ${metrics['avg_cpa']:.2f}, enquanto os top performers alcançam "
                    f"${patterns['avg_cpa']:.2f}. Há oportunidade de redução de {((metrics['avg_cpa'] - patterns['avg_cpa']) / metrics['avg_cpa'] * 100):.1f}% no CPA.",
-        'icon': '💵'
+        'icon': ''
     })
     
     return insights

@@ -1,10 +1,4 @@
-"""
-Relatório Completo de Marketing Science
-Meta Ads Creative Performance Analysis
-=====================================
-
-Execute este arquivo para gerar o relatório completo
-"""
+"""Imprime o resumo das análises no terminal e salva os gráficos em HTML em reports/."""
 
 import pandas as pd
 import numpy as np
@@ -38,13 +32,13 @@ COLORS = {
 # CARREGAR E ANALISAR DADOS
 # ============================================
 print("\n" + "="*70)
-print("📊 RELATÓRIO DE MARKETING SCIENCE - META ADS")
+print("RELATÓRIO DE MARKETING SCIENCE - META ADS")
 print("="*70)
 
-print("\n🔄 Carregando dados...")
+print("\nCarregando dados...")
 df = load_and_process_data(CSV_PATH)
 
-print("🔬 Executando análises avançadas...")
+print("Executando análises avançadas...")
 analyzer = MarketingScienceAnalyzer(df)
 report = analyzer.generate_full_report()
 
@@ -52,7 +46,7 @@ report = analyzer.generate_full_report()
 # 1. RESUMO EXECUTIVO
 # ============================================
 print("\n" + "="*70)
-print("📋 1. RESUMO EXECUTIVO")
+print("1. RESUMO EXECUTIVO")
 print("="*70)
 
 summary = report['executive_summary']
@@ -68,10 +62,10 @@ print(f"""
 └─────────────────────────────────────────────────────────────────────┘
 """)
 
-print("\n📌 PRINCIPAIS DESCOBERTAS:")
+print("\nPRINCIPAIS DESCOBERTAS:")
 for i, finding in enumerate(summary['key_findings'], 1):
     print(f"   {i}. {finding['finding']}")
-    print(f"      ➜ Impacto: {finding['impact']}")
+    print(f"      Impacto: {finding['impact']}")
 
 print(f"""
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -88,7 +82,7 @@ print(f"""
 # 2. IMPACTO DAS VARIÁVEIS NO ROAS
 # ============================================
 print("\n" + "="*70)
-print("📈 2. IMPACTO DAS VARIÁVEIS NO ROAS")
+print("2. IMPACTO DAS VARIÁVEIS NO ROAS")
 print("="*70)
 
 impact = report['roas_impact']
@@ -97,13 +91,13 @@ print(f"   R² (Ridge): {impact['model_performance']['ridge_r2']:.3f}")
 print(f"   R² (Random Forest): {impact['model_performance']['rf_r2']:.3f}")
 print(f"   R² (Gradient Boosting): {impact['model_performance']['gb_r2']:.3f}")
 
-print("\n   📊 RANKING DE IMPACTO NO ROAS:")
+print("\n   RANKING DE IMPACTO NO ROAS:")
 print("   " + "-"*65)
 print(f"   {'#':<3} {'Variável':<25} {'Impacto %':<12} {'Direção':<12} {'Significância'}")
 print("   " + "-"*65)
 
 for i, var in enumerate(impact['impact_ranking'], 1):
-    sig = "✓ Sig." if var['statistical_significance']['is_significant'] else "○ N/S"
+    sig = "Sig." if var['statistical_significance']['is_significant'] else "○ N/S"
     print(f"   {i:<3} {var['variable']:<25} {var['impact_score']:>8.1f}%    {var['direction']:<12} {sig}")
 
 print("   " + "-"*65)
@@ -136,16 +130,16 @@ fig_impact.update_layout(
 )
 
 fig_impact.write_html(RELATORIOS / 'report_impact_roas.html')
-print("\n   📁 Gráfico salvo: report_impact_roas.html")
+print("\n   Gráfico salvo: report_impact_roas.html")
 
 # ============================================
-# 3. ANÁLISE DE CAUSALIDADE
+# 3. COMPARAÇÃO ENTRE GRUPOS
 # ============================================
 print("\n" + "="*70)
-print("🔬 3. ANÁLISE DE CAUSALIDADE (Difference-in-Differences)")
+print("3. COMPARAÇÃO COM E SEM ADVANTAGE+ PLACEMENTS")
 print("="*70)
 
-did = report['diff_in_diff']
+did = report['comparacao_advantage']
 print(f"""
    ADVANTAGE+ PLACEMENTS: ANÁLISE COMPARATIVA
    ═══════════════════════════════════════════
@@ -178,7 +172,7 @@ print("   *** p<0.01  ** p<0.05  * p<0.1")
 
 print(f"""
    ┌───────────────────────────────────────────────────────────────────┐
-   │  CONCLUSÃO CAUSAL                                                 │
+   │  CONCLUSÃO                                                        │
    ├───────────────────────────────────────────────────────────────────┤
    │  Uplift de ROAS:     {did['summary']['roas_uplift']:>+8.1f}%                                  │
    │  Redução de CPA:     {did['summary']['cpa_reduction']:>+8.1f}%                                  │
@@ -186,7 +180,7 @@ print(f"""
    └───────────────────────────────────────────────────────────────────┘
 """)
 
-# Gráfico Difference-in-Differences
+# Gráfico com e sem Advantage+
 fig_did = make_subplots(rows=1, cols=3, subplot_titles=('ROAS', 'CPA', 'CTR'))
 
 for i, metric in enumerate(['ROAS', 'CPA', 'CTR'], 1):
@@ -203,7 +197,7 @@ for i, metric in enumerate(['ROAS', 'CPA', 'CTR'], 1):
     )
 
 fig_did.update_layout(
-    title='Análise Difference-in-Differences: Advantage+ Placements',
+    title='Com e sem Advantage+ Placements',
     template=CHART_TEMPLATE,
     height=400,
     showlegend=False,
@@ -211,14 +205,14 @@ fig_did.update_layout(
     paper_bgcolor='rgba(0,0,0,0)'
 )
 
-fig_did.write_html(RELATORIOS / 'report_diff_in_diff.html')
-print("   📁 Gráfico salvo: report_diff_in_diff.html")
+fig_did.write_html(RELATORIOS / 'report_comparacao_advantage.html')
+print("   Gráfico salvo: report_comparacao_advantage.html")
 
 # ============================================
 # 4. RELAÇÃO FREQUENCY x CPA
 # ============================================
 print("\n" + "="*70)
-print("📉 4. RELAÇÃO MATEMÁTICA: FREQUENCY × CPA")
+print("4. RELAÇÃO MATEMÁTICA: FREQUENCY × CPA")
 print("="*70)
 
 freq = report['frequency_analysis']
@@ -249,7 +243,7 @@ for band in freq['frequency_bands']:
     print(f"   {band['range']:<12} {band['count']:<8} ${band['avg_cpa']:<11.2f} {band['avg_roas']:<12.2f} {band['total_conversions']:.0f}")
 
 print("   " + "-"*65)
-print(f"\n   ✓ Frequência Ótima: {freq['optimal_frequency']}")
+print(f"\n   Frequência Ótima: {freq['optimal_frequency']}")
 
 print(f"""
    ┌───────────────────────────────────────────────────────────────────┐
@@ -301,13 +295,13 @@ fig_freq.update_layout(
 )
 
 fig_freq.write_html(RELATORIOS / 'report_frequency_cpa.html')
-print("   📁 Gráfico salvo: report_frequency_cpa.html")
+print("   Gráfico salvo: report_frequency_cpa.html")
 
 # ============================================
 # 5. UPLIFT ADVANTAGE+ PLACEMENTS
 # ============================================
 print("\n" + "="*70)
-print("⚡ 5. UPLIFT MÉDIO: ADVANTAGE+ PLACEMENTS")
+print("5. UPLIFT MÉDIO: ADVANTAGE+ PLACEMENTS")
 print("="*70)
 
 uplift = report['advantage_uplift']
@@ -328,7 +322,7 @@ print("   " + "-"*70)
 
 for metric in ['ROAS', 'CPA', 'CTR', 'CPC', 'Conversions']:
     data = uplift[metric]
-    impact_icon = "✓ Positivo" if data['is_positive_impact'] else "✗ Negativo"
+    impact_icon = "Positivo" if data['is_positive_impact'] else "Negativo"
     
     if metric in ['ROAS', 'CTR']:
         with_fmt = f"{data['with_advantage']:.2f}"
@@ -352,7 +346,7 @@ print(f"""
    │  Variação de CPA:   {uplift['summary']['cpa_change']:>+10.1f}%                                │
    │  Uplift de CTR:     {uplift['summary']['ctr_uplift']:>+10.1f}%                                │
    │                                                                   │
-   │  ➜ Recomendação: {uplift['summary']['recommendation']:<45} │
+   │  Recomendação: {uplift['summary']['recommendation']:<45} │
    └───────────────────────────────────────────────────────────────────┘
 """)
 
@@ -360,7 +354,7 @@ print(f"""
 # 6. PADRÕES DOS TOP PERFORMERS
 # ============================================
 print("\n" + "="*70)
-print("🏆 6. PADRÕES DOS CREATIVES VENCEDORES")
+print("6. PADRÕES DOS CREATIVES VENCEDORES")
 print("="*70)
 
 top = report['top_performers']
@@ -409,7 +403,7 @@ for tgt, count in patterns['targeting']['distribution'].items():
 # 7. MATRIZ DE DECISÃO
 # ============================================
 print("\n" + "="*70)
-print("🎯 7. MATRIZ DE DECISÃO: ESCALAR | TESTAR | PAUSAR")
+print("7. MATRIZ DE DECISÃO: ESCALAR | TESTAR | PAUSAR")
 print("="*70)
 
 matrix = report['decision_matrix']
@@ -418,16 +412,16 @@ print(f"""
    ┌──────────────────────────────────────────────────────────────────────┐
    │                      RESUMO DA MATRIZ                                │
    ├──────────────────────────────────────────────────────────────────────┤
-   │  🚀 ESCALAR:    {matrix['summary']['total_to_scale']:>5} creatives                                    │
-   │  🔬 TESTAR:     {matrix['summary']['total_to_test']:>5} creatives                                    │
+   │  ESCALAR:    {matrix['summary']['total_to_scale']:>5} creatives                                    │
+   │  TESTAR:     {matrix['summary']['total_to_test']:>5} creatives                                    │
    │  ⏸️  PAUSAR:     {matrix['summary']['total_to_pause']:>5} creatives                                    │
    ├──────────────────────────────────────────────────────────────────────┤
-   │  💰 Economia Potencial: ${matrix['summary']['potential_savings']:>12,.2f}                         │
+   │  Economia Potencial: ${matrix['summary']['potential_savings']:>12,.2f}                         │
    └──────────────────────────────────────────────────────────────────────┘
 """)
 
 # ESCALAR
-print("\n   🚀 CREATIVES PARA ESCALAR (Top 10):")
+print("\n   CREATIVES PARA ESCALAR (Top 10):")
 print("   " + "-"*75)
 print(f"   {'Creative':<20} {'ROAS':<10} {'CPA':<12} {'Conv.':<10} {'Motivo'}")
 print("   " + "-"*75)
@@ -436,19 +430,19 @@ for c in matrix['scale']['creatives'][:10]:
     print(f"   {c['creative']:<20} {c['roas']:.2f}x     ${c['cpa']:<10.2f} {c['conversions']:<10.0f} {c['reason'][:30]}")
 
 print("   " + "-"*75)
-print(f"   ➜ Ação: {matrix['scale']['action']}")
-print(f"   ➜ Impacto Esperado: {matrix['scale']['expected_impact']}")
+print(f"   Ação: {matrix['scale']['action']}")
+print(f"   Impacto Esperado: {matrix['scale']['expected_impact']}")
 
 # TESTAR
-print("\n   🔬 CREATIVES PARA TESTAR (Amostra):")
+print("\n   CREATIVES PARA TESTAR (Amostra):")
 print("   " + "-"*75)
 
 for c in matrix['test']['creatives'][:5]:
     print(f"   {c['creative']:<20} ROAS: {c['roas']:.2f}x | CPA: ${c['cpa']:.2f} | {c['reason'][:35]}")
 
 print("   " + "-"*75)
-print(f"   ➜ Ação: {matrix['test']['action']}")
-print(f"   ➜ Impacto Esperado: {matrix['test']['expected_impact']}")
+print(f"   Ação: {matrix['test']['action']}")
+print(f"   Impacto Esperado: {matrix['test']['expected_impact']}")
 
 # PAUSAR
 print("\n   ⏸️  CREATIVES PARA PAUSAR (Amostra):")
@@ -458,8 +452,8 @@ for c in matrix['pause']['creatives'][:5]:
     print(f"   {c['creative']:<20} ROAS: {c['roas']:.2f}x | CPA: ${c['cpa']:.2f} | {c['reason'][:35]}")
 
 print("   " + "-"*75)
-print(f"   ➜ Ação: {matrix['pause']['action']}")
-print(f"   ➜ Economia: ${matrix['pause']['expected_savings']:.2f}")
+print(f"   Ação: {matrix['pause']['action']}")
+print(f"   Economia: ${matrix['pause']['expected_savings']:.2f}")
 
 # Gráfico da matriz de decisão
 fig_matrix = go.Figure()
@@ -487,13 +481,13 @@ fig_matrix.update_layout(
 )
 
 fig_matrix.write_html(RELATORIOS / 'report_decision_matrix.html')
-print("\n   📁 Gráfico salvo: report_decision_matrix.html")
+print("\n   Gráfico salvo: report_decision_matrix.html")
 
 # ============================================
 # 8. PREVISÕES 30 DIAS
 # ============================================
 print("\n" + "="*70)
-print("🔮 8. PREVISÕES PARA OS PRÓXIMOS 30 DIAS")
+print("8. PREVISÕES PARA OS PRÓXIMOS 30 DIAS")
 print("="*70)
 
 forecast = report['forecast']
@@ -506,7 +500,7 @@ print("""
 
 # Cenário Baseline
 bl = forecast['baseline']
-print(f"""   📊 CENÁRIO 1: {bl['scenario'].upper()}
+print(f"""   CENÁRIO 1: {bl['scenario'].upper()}
    ─────────────────────────────────────
    ROAS:        {bl['roas']['value']:.2f}x (IC: {bl['roas']['lower']:.2f} - {bl['roas']['upper']:.2f})
    CPA:         ${bl['cpa']['value']:.2f} (IC: ${bl['cpa']['lower']:.2f} - ${bl['cpa']['upper']:.2f})
@@ -516,7 +510,7 @@ print(f"""   📊 CENÁRIO 1: {bl['scenario'].upper()}
 
 # Cenário Otimizado
 opt = forecast['optimized']
-print(f"""   ⚡ CENÁRIO 2: {opt['scenario'].upper()} (RECOMENDADO)
+print(f"""   CENÁRIO 2: {opt['scenario'].upper()} (RECOMENDADO)
    ─────────────────────────────────────
    ROAS:        {opt['roas']['value']:.2f}x (IC: {opt['roas']['lower']:.2f} - {opt['roas']['upper']:.2f})  │ {opt['improvement_vs_baseline']['roas']:+.1f}% vs baseline
    CPA:         ${opt['cpa']['value']:.2f} (IC: ${opt['cpa']['lower']:.2f} - ${opt['cpa']['upper']:.2f})  │ {opt['improvement_vs_baseline']['cpa']:+.1f}% redução
@@ -526,7 +520,7 @@ print(f"""   ⚡ CENÁRIO 2: {opt['scenario'].upper()} (RECOMENDADO)
 
 # Cenário Agressivo
 agg = forecast['aggressive']
-print(f"""   🚀 CENÁRIO 3: {agg['scenario'].upper()}
+print(f"""   CENÁRIO 3: {agg['scenario'].upper()}
    ─────────────────────────────────────
    ROAS:        {agg['roas']['value']:.2f}x (IC: {agg['roas']['lower']:.2f} - {agg['roas']['upper']:.2f})  │ {agg['improvement_vs_baseline']['roas']:+.1f}% vs baseline
    CPA:         ${agg['cpa']['value']:.2f} (IC: ${agg['cpa']['lower']:.2f} - ${agg['cpa']['upper']:.2f})
@@ -599,13 +593,13 @@ fig_forecast.update_layout(
 )
 
 fig_forecast.write_html(RELATORIOS / 'report_forecast.html')
-print("   📁 Gráfico salvo: report_forecast.html")
+print("   Gráfico salvo: report_forecast.html")
 
 # ============================================
 # 9. RECOMENDAÇÕES PRIORITÁRIAS
 # ============================================
 print("\n" + "="*70)
-print("✅ 9. RECOMENDAÇÕES PRIORITÁRIAS")
+print("9. RECOMENDAÇÕES PRIORITÁRIAS")
 print("="*70)
 
 recs = report['priority_recommendations']
@@ -617,7 +611,7 @@ print("""
 """)
 
 for rec in recs:
-    priority_emoji = "🔴" if rec['priority'] <= 2 else "🟡" if rec['priority'] <= 4 else "🟢"
+    priority_emoji = "" if rec['priority'] <= 2 else "" if rec['priority'] <= 4 else ""
     print(f"""
    {priority_emoji} PRIORIDADE {rec['priority']}: {rec['category'].upper()}
    ───────────────────────────────────────
@@ -631,7 +625,7 @@ for rec in recs:
 # 10. RESUMO FINAL
 # ============================================
 print("\n" + "="*70)
-print("📋 10. RESUMO FINAL PARA APRESENTAÇÃO")
+print("10. RESUMO FINAL PARA APRESENTAÇÃO")
 print("="*70)
 
 print(f"""
@@ -643,7 +637,7 @@ print(f"""
    ║     • Variável mais importante: {impact['impact_ranking'][0]['variable']:<30}║
    ║     • Impacto: {impact['impact_ranking'][0]['impact_score']:.1f}% de influência no resultado             ║
    ║                                                                      ║
-   ║  2. CAUSALIDADE (ADVANTAGE+ PLACEMENTS)                              ║
+   ║  2. COM E SEM ADVANTAGE+ PLACEMENTS                                 ║
    ║     • Uplift de ROAS: {did['summary']['roas_uplift']:+.1f}%                                     ║
    ║     • Redução de CPA: {did['summary']['cpa_reduction']:+.1f}%                                     ║
    ║     • Confiança estatística: {did['summary']['statistical_confidence']*100:.1f}%                       ║
@@ -666,25 +660,25 @@ print(f"""
    ║              IMPACTO ESTIMADO TOTAL                                  ║
    ╠══════════════════════════════════════════════════════════════════════╣
    ║                                                                      ║
-   ║  📈 Melhoria no ROAS:        {summary['estimated_impact']['roas_improvement']:>+8.1f}%                          ║
-   ║  📉 Redução no CPA:          {summary['estimated_impact']['cpa_reduction']:>+8.1f}%                          ║
-   ║  📊 Aumento em Conversões:   {summary['estimated_impact']['conversion_increase']:>+8.1f}%                          ║
-   ║  💰 Economia Potencial:      ${summary['estimated_impact']['potential_savings']:>12,.2f}                    ║
+   ║  Melhoria no ROAS:        {summary['estimated_impact']['roas_improvement']:>+8.1f}%                          ║
+   ║  Redução no CPA:          {summary['estimated_impact']['cpa_reduction']:>+8.1f}%                          ║
+   ║  Aumento em Conversões:   {summary['estimated_impact']['conversion_increase']:>+8.1f}%                          ║
+   ║  Economia Potencial:      ${summary['estimated_impact']['potential_savings']:>12,.2f}                    ║
    ║                                                                      ║
    ╚══════════════════════════════════════════════════════════════════════╝
 """)
 
 print("\n" + "="*70)
-print("📁 ARQUIVOS DE GRÁFICOS GERADOS:")
+print("ARQUIVOS DE GRÁFICOS GERADOS:")
 print("="*70)
 print("""
    1. report_impact_roas.html      - Impacto das variáveis no ROAS
-   2. report_diff_in_diff.html     - Análise Difference-in-Differences
+   2. report_comparacao_advantage.html     - Com e sem Advantage+ Placements
    3. report_frequency_cpa.html    - Relação Frequency × CPA
    4. report_decision_matrix.html  - Matriz de Decisão
    5. report_forecast.html         - Previsões 30 dias
 """)
 
 print("\n" + "="*70)
-print("✅ RELATÓRIO COMPLETO GERADO COM SUCESSO!")
+print("RELATÓRIO COMPLETO GERADO COM SUCESSO!")
 print("="*70 + "\n")

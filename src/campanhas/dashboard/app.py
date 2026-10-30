@@ -1,7 +1,4 @@
-"""
-Meta Ads Creative Performance Dashboard - VERSÃO COMPLETA
-Dashboard integrado com todos os relatórios de Marketing Science
-"""
+"""Aplicação Dash: layout, gráficos e callbacks do painel de criativos."""
 
 import dash
 from dash import dcc, html, dash_table, callback, Input, Output, State
@@ -93,7 +90,7 @@ def create_performance_bar(name, roas, max_roas, color='blue', cpa=None):
     
     right_text = f"ROAS: {roas:.2f}x"
     if cpa is not None:
-        right_text += f" | CPA: R$ {cpa:.2f}"
+        right_text += f" | CPA: US$ {cpa:.2f}"
     
     return html.Div([
         html.Div([
@@ -114,7 +111,7 @@ def create_advantage_card(title, roas, cpa, count, is_on=True):
             html.Div(className=f"adv-indicator adv-{color}"),
             html.Div([
                 html.Div(title, className="adv-title"),
-                html.Div(f"ROAS: {roas:.2f}x | CPA: R$ {cpa:.2f}", className="adv-metrics"),
+                html.Div(f"ROAS: {roas:.2f}x | CPA: US$ {cpa:.2f}", className="adv-metrics"),
                 html.Div(f"{count} creatives", className="adv-count")
             ], className="adv-content")
         ], className="adv-row")
@@ -122,8 +119,8 @@ def create_advantage_card(title, roas, cpa, count, is_on=True):
 
 
 def format_currency_br(value):
-    """Formata número em moeda estilo brasileiro (R$ 1.234,56)."""
-    return "R$ " + f"{value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    """Formata número em moeda estilo brasileiro (US$ 1.234,56)."""
+    return "US$ " + f"{value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 def format_number_br(value):
@@ -321,9 +318,9 @@ def create_impact_roas_chart():
     return fig
 
 
-def create_diff_in_diff_chart():
-    """Gráfico Difference-in-Differences"""
-    did = full_report['diff_in_diff']
+def create_comparacao_advantage_chart():
+    """Médias com e sem Advantage+ Placements"""
+    did = full_report['comparacao_advantage']
     
     fig = make_subplots(rows=1, cols=3, subplot_titles=('ROAS', 'CPA ($)', 'CTR (%)'))
     
@@ -341,7 +338,7 @@ def create_diff_in_diff_chart():
         )
     
     fig.update_layout(
-        title='Difference-in-Differences: Advantage+ Placements',
+        title='Com e sem Advantage+ Placements',
         template=CHART_TEMPLATE, height=400, showlegend=False,
         plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)'
     )
@@ -387,7 +384,7 @@ def create_decision_matrix_chart():
     """Gráfico Matriz de Decisão"""
     matrix = full_report['decision_matrix']
     
-    categories = ['🚀 Escalar', '🔬 Testar', '⏸️ Pausar']
+    categories = ['Escalar', 'Testar', '⏸️ Pausar']
     counts = [matrix['scale']['count'], matrix['test']['count'], matrix['pause']['count']]
     colors_matrix = [COLORS['success'], COLORS['warning'], COLORS['danger']]
     roas_vals = [matrix['scale']['avg_roas'], matrix['test']['avg_roas'], matrix['pause']['avg_roas']]
@@ -627,7 +624,7 @@ def create_combined_lift_chart():
     fig.add_vline(x=0, line_dash="solid", line_color="#94a3b8", line_width=2)
     
     fig.update_layout(
-        title='🏆 Maiores Lifts por Dimensão (ROAS vs. Média Global)',
+        title='Maiores Lifts por Dimensão (ROAS vs. Média Global)',
         xaxis_title='ROAS Lift (%)',
         template=CHART_TEMPLATE,
         height=350,
@@ -645,8 +642,8 @@ def create_combined_lift_chart():
 
 # Header
 header = html.Div([
-    html.H1([html.Span("📊 "), "Meta Ads Creative Performance Dashboard"], className="dashboard-title"),
-    html.P("Análise avançada de performance de creatives com Marketing Science", className="dashboard-subtitle")
+    html.H1([html.Span(""), "Meta Ads Creative Performance Dashboard"], className="dashboard-title"),
+    html.P("Desempenho dos criativos por campanha, público e posicionamento", className="dashboard-subtitle")
 ], className="dashboard-header")
 
 # KPIs - Dashboard Principal (4 cards principais)
@@ -655,31 +652,31 @@ kpi_section = html.Div([
     html.H2("Dashboard Principal", className="section-title"),
     html.Div([
         create_kpi_card(
-            "💰", 
-            f"R$ {metrics['total_spend']:,.2f}", 
+            "", 
+            f"US$ {metrics['total_spend']:,.2f}", 
             "INVESTIMENTO TOTAL",
             f"{total_creatives} creatives",
             "purple"
         ),
         create_kpi_card(
-            "🎯", 
+            "", 
             f"{metrics['total_conversions']:,.0f}", 
             "CONVERSÕES",
-            f"CPA: R$ {metrics['avg_cpa']:.2f}",
+            f"CPA: US$ {metrics['avg_cpa']:.2f}",
             "blue"
         ),
         create_kpi_card(
-            "📊", 
+            "", 
             f"{metrics['avg_ctr']:.2f}%", 
             "CTR MÉDIO",
-            f"CPC: R$ {metrics['avg_cpc']:.2f}" if 'avg_cpc' in metrics else f"CPC: R$ {(metrics['total_spend']/metrics['total_clicks']) if metrics['total_clicks'] > 0 else 0:.2f}",
+            f"CPC: US$ {metrics['avg_cpc']:.2f}" if 'avg_cpc' in metrics else f"CPC: US$ {(metrics['total_spend']/metrics['total_clicks']) if metrics['total_clicks'] > 0 else 0:.2f}",
             "yellow"
         ),
         create_kpi_card(
-            "📈", 
+            "", 
             f"{metrics['overall_roas']:.2f}x", 
             "ROAS MÉDIO",
-            f"CPM: R$ {(metrics['total_spend']/metrics['total_impressions']*1000) if metrics['total_impressions'] > 0 else 0:.2f}",
+            f"CPM: US$ {(metrics['total_spend']/metrics['total_impressions']*1000) if metrics['total_impressions'] > 0 else 0:.2f}",
             "green"
         ),
     ], className="kpi-container-main")
@@ -754,7 +751,7 @@ performance_grid = html.Div([
 
 # Filtros - Sidebar vertical
 filter_sidebar = html.Div([
-    html.Div([html.Span("🔍 "), "Filtros"], className="filter-title"),
+    html.Div([html.Span(""), "Filtros"], className="filter-title"),
     html.Div([
         html.Label("Campanha"),
         dcc.Dropdown(id='filter-campaign', options=[{'label': c, 'value': c} for c in df['Campanha'].unique()],
@@ -788,7 +785,7 @@ filter_sidebar = html.Div([
 ], className="filter-sidebar")
 
 # Extrair dados do relatório
-did = full_report['diff_in_diff']
+did = full_report['comparacao_advantage']
 freq = full_report['frequency_analysis']
 uplift = full_report['advantage_uplift']
 top_patterns = full_report['top_performers']
@@ -804,7 +801,7 @@ mmm_analysis = full_report['mmm_analysis']  # Marketing Mix Contribution
 # Tabs principais com Dashboard Principal como primeira aba dinâmica
 tabs = dcc.Tabs([
     # Tab 1: Dashboard Principal (dinâmico - afetado pelos filtros)
-    dcc.Tab(label='📊 Dashboard Principal', children=[
+    dcc.Tab(label='Dashboard Principal', children=[
         html.Div([
             # KPIs dinâmicos (Big Numbers)
             html.Div(id='dynamic-kpis'),
@@ -816,14 +813,14 @@ tabs = dcc.Tabs([
     ]),
     
     # Tab 2: Top Creatives
-    dcc.Tab(label='🏆 Top Creatives', children=[
+    dcc.Tab(label='Top Creatives', children=[
         html.Div([
-            html.H2("🏆 Top 10 Creatives de Melhor Performance", style={'marginBottom': '20px'}),
+            html.H2("Top 10 Creatives de Melhor Performance", style={'marginBottom': '20px'}),
             create_chart_container("Ranking dos Top Creatives por ROAS",
                 dcc.Graph(figure=create_top_creatives_chart())),
             
             html.Div([
-                html.H3("📋 Detalhes dos Top Creatives", className="chart-title"),
+                html.H3("Detalhes dos Top Creatives", className="chart-title"),
                 dash_table.DataTable(
                     columns=[
                         {'name': '#', 'id': 'rank'}, {'name': 'Creative', 'id': 'Nome do Creative'},
@@ -839,7 +836,7 @@ tabs = dcc.Tabs([
             ], className="chart-container"),
             
             html.Div([
-                html.H3("🔍 Padrões Identificados", className="chart-title"),
+                html.H3("Padrões Identificados", className="chart-title"),
                 html.Div([
                     html.Div([html.Div(patterns['top_placement'], className="pattern-value"),
                               html.Div("Placement Predominante", className="pattern-label")], className="pattern-item"),
@@ -857,13 +854,13 @@ tabs = dcc.Tabs([
     ]),
     
     # Tab 3: MARKETING SCIENCE (SIMPLIFICADO)
-    dcc.Tab(label='🔬 Marketing Science', children=[
+    dcc.Tab(label='Marketing Science', children=[
         html.Div([
             # Header da seção
             html.Div([
-                html.H2([html.Span("✓ ", style={'color': COLORS['success']}), "Marketing Science"], 
+                html.H2([html.Span("", style={'color': COLORS['success']}), "Marketing Science"], 
                        style={'marginBottom': '10px', 'fontSize': '1.8em', 'fontWeight': '600'}),
-                html.P("Análise de impacto causal e recomendações baseadas em dados",
+                html.P("Comparação entre grupos de criativos e recomendações",
                        style={'color': '#6b7280', 'marginBottom': '30px'})
             ]),
             
@@ -882,7 +879,7 @@ tabs = dcc.Tabs([
                         ], style={'marginBottom': '4px'}),
                         html.Div([
                             html.Span("CPA médio: ", style={'color': '#6b7280'}),
-                            html.Span(f"R$ {uplift['CPA']['with_advantage']:.2f}", style={'fontWeight': '600'})
+                            html.Span(f"US$ {uplift['CPA']['with_advantage']:.2f}", style={'fontWeight': '600'})
                         ], style={'marginBottom': '4px'}),
                         html.Div(f"{uplift['summary']['total_with_advantage']} creatives", style={'color': '#6b7280', 'fontSize': '0.9em'})
                     ], style={'padding': '15px', 'backgroundColor': '#f8fafc', 'borderRadius': '8px', 'marginBottom': '15px'}),
@@ -896,7 +893,7 @@ tabs = dcc.Tabs([
                         ], style={'marginBottom': '4px'}),
                         html.Div([
                             html.Span("CPA médio: ", style={'color': '#6b7280'}),
-                            html.Span(f"R$ {uplift['CPA']['without_advantage']:.2f}", style={'fontWeight': '600'})
+                            html.Span(f"US$ {uplift['CPA']['without_advantage']:.2f}", style={'fontWeight': '600'})
                         ], style={'marginBottom': '4px'}),
                         html.Div(f"{uplift['summary']['total_without_advantage']} creatives", style={'color': '#6b7280', 'fontSize': '0.9em'})
                     ], style={'padding': '15px', 'backgroundColor': '#f8fafc', 'borderRadius': '8px', 'marginBottom': '15px'}),
@@ -922,7 +919,7 @@ tabs = dcc.Tabs([
                         ], style={'marginBottom': '8px'}),
                         html.Div([
                             html.Span("CPA médio: ", style={'color': '#6b7280'}),
-                            html.Span(f"R$ {df['CPA'].mean():.2f}", style={'fontWeight': '600'})
+                            html.Span(f"US$ {df['CPA'].mean():.2f}", style={'fontWeight': '600'})
                         ])
                     ], style={'padding': '15px', 'backgroundColor': '#f8fafc', 'borderRadius': '8px', 'marginBottom': '20px'}),
                     
@@ -938,7 +935,7 @@ tabs = dcc.Tabs([
             
             # ========== SEÇÃO 2: IMPACTO DAS VARIÁVEIS ==========
             html.Div([
-                html.H3("📊 Impacto das Variáveis no ROAS", style={'marginBottom': '20px', 'fontWeight': '600'}),
+                html.H3("Impacto das Variáveis no ROAS", style={'marginBottom': '20px', 'fontWeight': '600'}),
                 html.Div([
                     html.Div([
                         html.Div([
@@ -953,7 +950,7 @@ tabs = dcc.Tabs([
             
             # ========== SEÇÃO 3: TABELA DE ESTATÍSTICAS DE REGRESSÃO ==========
             html.Div([
-                html.H3("📈 Análise Estatística de Regressão", style={'marginBottom': '20px', 'fontWeight': '600'}),
+                html.H3("Análise Estatística de Regressão", style={'marginBottom': '20px', 'fontWeight': '600'}),
                 
                 # Resumo do modelo completo
                 html.Div([
@@ -990,7 +987,7 @@ tabs = dcc.Tabs([
                             html.Td(f"{var['t_statistic']:.3f}", style={'textAlign': 'center', 'padding': '12px 15px', 'borderBottom': '1px solid #f3f4f6'}),
                             html.Td(f"{var['p_value']:.4f}", style={'textAlign': 'center', 'padding': '12px 15px', 'borderBottom': '1px solid #f3f4f6'}),
                             html.Td(
-                                "✓ Sig." if var['is_significant'] else "✗ N.S.",
+                                "Sig." if var['is_significant'] else "N.S.",
                                 style={
                                     'textAlign': 'center', 
                                     'padding': '12px 15px', 
@@ -1006,14 +1003,14 @@ tabs = dcc.Tabs([
                 # Legenda
                 html.Div([
                     html.Div("Legenda: ", style={'fontWeight': '600', 'marginRight': '10px', 'display': 'inline'}),
-                    html.Span("✓ Sig. = Estatisticamente significativo (p < 0.05)", style={'color': '#6b7280', 'fontSize': '0.85em', 'marginRight': '15px'}),
-                    html.Span("✗ N.S. = Não significativo", style={'color': '#6b7280', 'fontSize': '0.85em'})
+                    html.Span("Sig. = Estatisticamente significativo (p < 0.05)", style={'color': '#6b7280', 'fontSize': '0.85em', 'marginRight': '15px'}),
+                    html.Span("N.S. = Não significativo", style={'color': '#6b7280', 'fontSize': '0.85em'})
                 ], style={'marginTop': '15px', 'padding': '10px', 'backgroundColor': '#f9fafb', 'borderRadius': '6px'})
             ], style={'padding': '25px', 'backgroundColor': '#ffffff', 'borderRadius': '12px', 'boxShadow': '0 1px 3px rgba(0,0,0,0.08)', 'marginBottom': '25px'}),
             
             # ========== SEÇÃO 4: MARKETING MIX CONTRIBUTION ==========
             html.Div([
-                html.H3("🎯 Marketing Mix Contribution", style={'marginBottom': '20px', 'fontWeight': '600'}),
+                html.H3("Marketing Mix Contribution", style={'marginBottom': '20px', 'fontWeight': '600'}),
                 
                 # Elasticidade e Saturação - Cards resumo
                 html.Div([
@@ -1093,7 +1090,7 @@ tabs = dcc.Tabs([
                 
                 # Insight de elasticidade
                 html.Div([
-                    html.Div("💡 ", style={'display': 'inline'}),
+                    html.Div("", style={'display': 'inline'}),
                     html.Span("Insight: ", style={'fontWeight': '600'}),
                     html.Span(mmm_analysis['elasticity_analysis']['recommendation'], style={'color': '#6b7280'})
                 ], style={'padding': '15px', 'backgroundColor': '#f8fafc', 'borderRadius': '8px', 'fontSize': '0.9em'})
@@ -1115,14 +1112,14 @@ tabs = dcc.Tabs([
                     # Card 2: Investimento projetado (roxo)
                     html.Div([
                         html.Div("Investimento projetado", style={'color': '#6b7280', 'fontSize': '0.85em', 'marginBottom': '10px'}),
-                        html.Div(f"R$ {metrics['total_spend'] * 1.1:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.'), 
+                        html.Div(f"US$ {metrics['total_spend'] * 1.1:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.'), 
                                 style={'fontSize': '1.8em', 'fontWeight': '700', 'color': '#8b5cf6'})
                     ], style={'flex': '1', 'padding': '20px', 'backgroundColor': 'rgba(139, 92, 246, 0.08)', 'borderRadius': '10px', 'borderBottom': '3px solid #8b5cf6'}),
                     
                     # Card 3: CPA esperado (verde)
                     html.Div([
                         html.Div("CPA esperado", style={'color': '#6b7280', 'fontSize': '0.85em', 'marginBottom': '10px'}),
-                        html.Div(f"R$ {forecast['optimized']['cpa']['value']:.2f}".replace('.', ','), 
+                        html.Div(f"US$ {forecast['optimized']['cpa']['value']:.2f}".replace('.', ','), 
                                 style={'fontSize': '1.8em', 'fontWeight': '700', 'color': '#10b981'})
                     ], style={'flex': '1', 'padding': '20px', 'backgroundColor': 'rgba(16, 185, 129, 0.08)', 'borderRadius': '10px', 'borderBottom': '3px solid #10b981'}),
                     
@@ -1149,9 +1146,9 @@ tabs = dcc.Tabs([
     ]),
     
     # Tab 4: Ações Recomendadas (Novo Layout inspirado na imagem)
-    dcc.Tab(label='✅ Ações Recomendadas', children=[
+    dcc.Tab(label='Ações Recomendadas', children=[
         html.Div([
-            html.H2([html.Span("⚡ ", style={'color': '#f59e0b'}), "Ações Recomendadas"], 
+            html.H2([html.Span("", style={'color': '#f59e0b'}), "Ações Recomendadas"], 
                    style={'marginBottom': '30px', 'fontWeight': '600'}),
             
             # ========== PRIORIDADE 1 - ALTO IMPACTO / BAIXO ESFORÇO ==========
@@ -1167,7 +1164,7 @@ tabs = dcc.Tabs([
                 html.Ul([
                     html.Li([
                         html.Strong("Escalar orçamento ", style={'color': '#374151'}),
-                        html.Span(f"nos creatives com ROAS acima de {metrics['overall_roas']:.1f}x e CPA abaixo de R$ {metrics['avg_cpa']:.2f}.", style={'color': '#6b7280'})
+                        html.Span(f"nos creatives com ROAS acima de {metrics['overall_roas']:.1f}x e CPA abaixo de US$ {metrics['avg_cpa']:.2f}.", style={'color': '#6b7280'})
                     ], style={'marginBottom': '10px', 'lineHeight': '1.6'}),
                     html.Li([
                         html.Strong("Pausar ou reduzir ", style={'color': '#374151'}),
@@ -1238,7 +1235,7 @@ tabs = dcc.Tabs([
             
             # ========== RESUMO DE IMPACTO ESTIMADO ==========
             html.Div([
-                html.H3("📊 Impacto Estimado das Ações", style={'marginBottom': '20px', 'fontWeight': '600'}),
+                html.H3("Impacto Estimado das Ações", style={'marginBottom': '20px', 'fontWeight': '600'}),
                 html.Div([
                     html.Div([
                         html.Div(f"+{exec_summary['estimated_impact']['roas_improvement']:.1f}%", 
@@ -1259,7 +1256,7 @@ tabs = dcc.Tabs([
                     ], style={'flex': '1', 'textAlign': 'center', 'padding': '20px', 'backgroundColor': 'rgba(139, 92, 246, 0.08)', 'borderRadius': '10px'}),
                     
                     html.Div([
-                        html.Div(f"R$ {exec_summary['estimated_impact']['potential_savings']:,.0f}".replace(',', '.'), 
+                        html.Div(f"US$ {exec_summary['estimated_impact']['potential_savings']:,.0f}".replace(',', '.'), 
                                 style={'fontSize': '1.8em', 'fontWeight': '700', 'color': '#f59e0b'}),
                         html.Div("Economia Potencial", style={'color': '#6b7280', 'fontSize': '0.9em'})
                     ], style={'flex': '1', 'textAlign': 'center', 'padding': '20px', 'backgroundColor': 'rgba(245, 158, 11, 0.08)', 'borderRadius': '10px'})
@@ -1270,9 +1267,9 @@ tabs = dcc.Tabs([
     ]),
     
     # Tab 5: Padrões Vencedores (Novo Layout)
-    dcc.Tab(label='🎯 Padrões Vencedores', children=[
+    dcc.Tab(label='Padrões Vencedores', children=[
         html.Div([
-            html.H2([html.Span("🎯 ", style={'color': '#ef4444'}), "Padrões dos Creatives Vencedores"], 
+            html.H2([html.Span("", style={'color': '#ef4444'}), "Padrões dos Creatives Vencedores"], 
                    style={'marginBottom': '30px', 'fontWeight': '600'}),
             
             # ========== DUAS COLUNAS PRINCIPAIS ==========
@@ -1318,7 +1315,7 @@ tabs = dcc.Tabs([
                     html.Div([
                         # Recomendação 1
                         html.Div([
-                            html.Span("✓ ", style={'color': '#ef4444', 'fontWeight': 'bold', 'marginRight': '8px'}),
+                            html.Span("", style={'color': '#ef4444', 'fontWeight': 'bold', 'marginRight': '8px'}),
                             html.Span("Priorize a produção de novos creatives ", style={'color': '#6b7280'}),
                             html.Strong("seguindo o mesmo Placement e Objective ", style={'color': '#1f2937'}),
                             html.Span("que aparecem nos padrões vencedores.", style={'color': '#6b7280'})
@@ -1326,7 +1323,7 @@ tabs = dcc.Tabs([
                         
                         # Recomendação 2
                         html.Div([
-                            html.Span("✓ ", style={'color': '#ef4444', 'fontWeight': 'bold', 'marginRight': '8px'}),
+                            html.Span("", style={'color': '#ef4444', 'fontWeight': 'bold', 'marginRight': '8px'}),
                             html.Span("Use o tipo de ", style={'color': '#6b7280'}),
                             html.Strong("Targeting vencedor ", style={'color': '#1f2937'}),
                             html.Span("como base e apenas teste variações incrementais.", style={'color': '#6b7280'})
@@ -1334,13 +1331,13 @@ tabs = dcc.Tabs([
                         
                         # Recomendação 3
                         html.Div([
-                            html.Span("✓ ", style={'color': '#ef4444', 'fontWeight': 'bold', 'marginRight': '8px'}),
+                            html.Span("", style={'color': '#ef4444', 'fontWeight': 'bold', 'marginRight': '8px'}),
                             html.Span("Mantenha frequency em faixa próxima à média observada para evitar saturação e queda de CTR.", style={'color': '#6b7280'})
                         ], style={'marginBottom': '18px', 'lineHeight': '1.6'}),
                         
                         # Recomendação 4
                         html.Div([
-                            html.Span("✓ ", style={'color': '#ef4444', 'fontWeight': 'bold', 'marginRight': '8px'}),
+                            html.Span("", style={'color': '#ef4444', 'fontWeight': 'bold', 'marginRight': '8px'}),
                             html.Span("Use os vencedores como ", style={'color': '#6b7280'}),
                             html.Strong("benchmark ", style={'color': '#1f2937'}),
                             html.Span("em todo novo teste criativo (sempre rodar contra um champion).", style={'color': '#6b7280'})
@@ -1352,7 +1349,7 @@ tabs = dcc.Tabs([
             
             # ========== MÉTRICAS DOS VENCEDORES ==========
             html.Div([
-                html.H3("📊 Métricas dos Top Performers", style={'marginBottom': '20px', 'fontWeight': '600'}),
+                html.H3("Métricas dos Top Performers", style={'marginBottom': '20px', 'fontWeight': '600'}),
                 html.Div([
                     html.Div([
                         html.Div(f"{top_patterns['patterns']['metrics']['avg_roas']:.2f}x", 
@@ -1363,7 +1360,7 @@ tabs = dcc.Tabs([
                     ], style={'flex': '1', 'textAlign': 'center', 'padding': '20px', 'backgroundColor': 'rgba(16, 185, 129, 0.08)', 'borderRadius': '10px'}),
                     
                     html.Div([
-                        html.Div(f"R$ {top_patterns['patterns']['metrics']['avg_cpa']:.2f}", 
+                        html.Div(f"US$ {top_patterns['patterns']['metrics']['avg_cpa']:.2f}", 
                                 style={'fontSize': '1.8em', 'fontWeight': '700', 'color': '#3b82f6'}),
                         html.Div("CPA Médio", style={'color': '#6b7280', 'fontSize': '0.9em'}),
                         html.Div(f"{top_patterns['patterns']['vs_average']['cpa_diff']:.1f}% vs média", 
@@ -1390,21 +1387,21 @@ tabs = dcc.Tabs([
     ]),
     
     # Tab 6: Insights
-    dcc.Tab(label='💡 Insights', children=[
+    dcc.Tab(label='Insights', children=[
         html.Div([
-            html.H2("🧠 Insight do Analista", style={'marginBottom': '20px'}),
+            html.H2("Insight do Analista", style={'marginBottom': '20px'}),
             html.Div(id='insights-analyst-container', style={'marginBottom': '30px'}),
-            html.H2("💡 Insights Automáticos", style={'marginBottom': '20px'}),
+            html.H2("Insights Automáticos", style={'marginBottom': '20px'}),
             html.Div(id='insights-list')
         ], className="tab-content")
     ]),
     
     # Tab 7: RELATÓRIO COMPLETO PARA APRESENTAÇÃO
-    dcc.Tab(label='📑 Relatório Completo', children=[
+    dcc.Tab(label='Relatório Completo', children=[
         html.Div([
             # Header do Relatório
             html.Div([
-                html.H1("📊 Relatório Completo de Marketing Science", 
+                html.H1("Relatório Completo de Marketing Science", 
                        style={'textAlign': 'center', 'background': 'linear-gradient(135deg, #1877F2, #42b72a)',
                               'WebkitBackgroundClip': 'text', 'WebkitTextFillColor': 'transparent',
                               'fontSize': '2.2em', 'fontWeight': '800', 'marginBottom': '10px'}),
@@ -1415,7 +1412,7 @@ tabs = dcc.Tabs([
             
             # ========== RESUMO EXECUTIVO ==========
             html.Div([
-                html.H2("📋 Resumo Executivo", style={'marginBottom': '20px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
+                html.H2("Resumo Executivo", style={'marginBottom': '20px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
                 html.Div([
                     html.P([
                         f"Este relatório analisa o desempenho de ", html.Strong(f"{exec_summary['total_creatives']:,}"), " criativos de Meta Ads, ",
@@ -1448,7 +1445,7 @@ tabs = dcc.Tabs([
             
             # ========== 10 DESCOBERTAS PRINCIPAIS ==========
             html.Div([
-                html.H2("🔍 10 Descobertas Principais", style={'marginBottom': '25px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
+                html.H2("10 Descobertas Principais", style={'marginBottom': '25px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
                 html.Div([
                     # Descoberta 1
                     html.Div([
@@ -1585,10 +1582,10 @@ tabs = dcc.Tabs([
             
             # ========== 5 OPORTUNIDADES DE OTIMIZAÇÃO ==========
             html.Div([
-                html.H2("🎯 5 Oportunidades de Otimização", style={'marginBottom': '25px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
+                html.H2("5 Oportunidades de Otimização", style={'marginBottom': '25px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
                 html.Div([
                     html.Div([
-                        html.H4("💰 1. Realocar Budget para Top Performers", style={'color': COLORS['success']}),
+                        html.H4("1. Realocar Budget para Top Performers", style={'color': COLORS['success']}),
                         html.P(f"Transferir investimento dos {matrix['pause']['count']} criativos de baixa performance para os {matrix['scale']['count']} de alta performance."),
                         html.Div(f"Economia estimada: ${matrix['pause']['expected_savings']:,.2f}", 
                                 style={'color': COLORS['success'], 'fontWeight': 'bold', 'marginTop': '10px'})
@@ -1596,7 +1593,7 @@ tabs = dcc.Tabs([
                              'borderRadius': '12px', 'border': '1px solid rgba(66,183,42,0.3)'}),
                     
                     html.Div([
-                        html.H4("📍 2. Priorizar Placement Vencedor", style={'color': COLORS['success']}),
+                        html.H4("2. Priorizar Placement Vencedor", style={'color': COLORS['success']}),
                         html.P(f"Concentrar novos criativos no placement \"{patterns['top_placement']}\" que apresenta ROAS superior."),
                         html.Div(f"Potencial: Aumento significativo no ROAS", 
                                 style={'color': COLORS['success'], 'fontWeight': 'bold', 'marginTop': '10px'})
@@ -1606,7 +1603,7 @@ tabs = dcc.Tabs([
                 
                 html.Div([
                     html.Div([
-                        html.H4("🎯 3. Otimizar Targeting", style={'color': COLORS['primary']}),
+                        html.H4("3. Otimizar Targeting", style={'color': COLORS['primary']}),
                         html.P(f"Expandir uso de targeting \"{patterns['top_targeting']}\" e testar lookalikes dos top performers."),
                         html.Div(f"ROAS alvo: {top_patterns['patterns']['metrics']['avg_roas']:.2f}x", 
                                 style={'color': COLORS['primary'], 'fontWeight': 'bold', 'marginTop': '10px'})
@@ -1614,7 +1611,7 @@ tabs = dcc.Tabs([
                              'borderRadius': '12px', 'border': '1px solid rgba(24,119,242,0.3)'}),
                     
                     html.Div([
-                        html.H4("📊 4. Controle de Frequência", style={'color': COLORS['primary']}),
+                        html.H4("4. Controle de Frequência", style={'color': COLORS['primary']}),
                         html.P(f"Implementar caps de frequência na faixa ótima \"{freq['optimal_frequency']}\" para evitar saturação."),
                         html.Div("Redução de waste estimada: 15-20%", 
                                 style={'color': COLORS['primary'], 'fontWeight': 'bold', 'marginTop': '10px'})
@@ -1622,7 +1619,7 @@ tabs = dcc.Tabs([
                              'borderRadius': '12px', 'border': '1px solid rgba(24,119,242,0.3)'}),
                     
                     html.Div([
-                        html.H4("🧪 5. Programa de Testes A/B", style={'color': COLORS['warning']}),
+                        html.H4("5. Programa de Testes A/B", style={'color': COLORS['warning']}),
                         html.P(f"Estruturar testes para os {matrix['test']['count']} criativos em zona de incerteza."),
                         html.Div(f"{matrix['test']['count']} criativos para otimizar", 
                                 style={'color': COLORS['warning'], 'fontWeight': 'bold', 'marginTop': '10px'})
@@ -1633,10 +1630,10 @@ tabs = dcc.Tabs([
             
             # ========== 3 RECOMENDAÇÕES DE MÍDIA ==========
             html.Div([
-                html.H2("📺 3 Recomendações de Mídia", style={'marginBottom': '25px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
+                html.H2("3 Recomendações de Mídia", style={'marginBottom': '25px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
                 html.Div([
                     html.Div([
-                        html.H4("🚀 URGENTE: Escalar Vencedores", style={'color': COLORS['danger']}),
+                        html.H4("URGENTE: Escalar Vencedores", style={'color': COLORS['danger']}),
                         html.P([html.Strong("Ação: "), f"Aumentar budget em 50% para os {matrix['scale']['count']} criativos classificados para escalar."]),
                         html.P([html.Strong("Prazo: "), "Próximos 7 dias"]),
                         html.P([html.Strong("Critério: "), f"ROAS > {df['ROAS'].quantile(0.75):.2f}x e baixo CPA"]),
@@ -1658,7 +1655,7 @@ tabs = dcc.Tabs([
                              'borderRadius': '12px', 'border': '2px solid rgba(255,193,7,0.5)'}),
                     
                     html.Div([
-                        html.H4("🔬 ESTRATÉGICA: Expandir Testes", style={'color': COLORS['primary']}),
+                        html.H4("ESTRATÉGICA: Expandir Testes", style={'color': COLORS['primary']}),
                         html.P([html.Strong("Ação: "), "Criar variações dos top 10 criativos para teste."]),
                         html.P([html.Strong("Prazo: "), "Próximos 14 dias"]),
                         html.P([html.Strong("Critério: "), "3 variações por criativo vencedor"]),
@@ -1672,9 +1669,9 @@ tabs = dcc.Tabs([
             
             # ========== PADRÕES DOS CREATIVES VENCEDORES ==========
             html.Div([
-                html.H2("🏆 Padrões dos Creatives Vencedores", style={'marginBottom': '25px', 'borderBottom': '2px solid #FFD700', 'paddingBottom': '10px'}),
+                html.H2("Padrões dos Creatives Vencedores", style={'marginBottom': '25px', 'borderBottom': '2px solid #FFD700', 'paddingBottom': '10px'}),
                 html.Div([
-                    html.H3("🥇 DNA do Creative Vencedor", style={'color': '#FFD700', 'marginBottom': '20px'}),
+                    html.H3("DNA do Creative Vencedor", style={'color': '#FFD700', 'marginBottom': '20px'}),
                     html.P(f"Baseado na análise dos {len(top_creatives)} criativos top performers (top 10% por ROAS)", 
                           style={'color': '#a0aec0', 'marginBottom': '20px'}),
                     html.Div([
@@ -1703,7 +1700,7 @@ tabs = dcc.Tabs([
             
             # ========== MATRIZ DE DECISÃO ==========
             html.Div([
-                html.H2("🎲 Matriz de Decisão", style={'marginBottom': '25px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
+                html.H2("Matriz de Decisão", style={'marginBottom': '25px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
                 html.Div([
                     html.Div([
                         html.Div(f"{matrix['scale']['count']}", style={'fontSize': '3em', 'fontWeight': '800', 'color': COLORS['success']}),
@@ -1736,7 +1733,7 @@ tabs = dcc.Tabs([
             
             # ========== PREVISÃO 30 DIAS ==========
             html.Div([
-                html.H2("🔮 Previsão para os Próximos 30 Dias", style={'marginBottom': '25px', 'borderBottom': '2px solid #9370DB', 'paddingBottom': '10px'}),
+                html.H2("Previsão para os Próximos 30 Dias", style={'marginBottom': '25px', 'borderBottom': '2px solid #9370DB', 'paddingBottom': '10px'}),
                 html.Div([
                     html.H3("Projeção de Conversões (30 dias)", style={'textAlign': 'center'}),
                     html.Div(f"{forecast['optimized']['conversions']['value']:,.0f}", 
@@ -1763,14 +1760,14 @@ tabs = dcc.Tabs([
             
             # ========== AÇÕES IMEDIATAS ==========
             html.Div([
-                html.H2("⚡ Ações Imediatas Recomendadas", style={'marginBottom': '25px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
+                html.H2("Ações Imediatas Recomendadas", style={'marginBottom': '25px', 'borderBottom': '2px solid #1877F2', 'paddingBottom': '10px'}),
                 html.Div([
                     html.Div([
                         html.Div("1", style={'background': COLORS['danger'], 'color': 'white', 'width': '30px', 'height': '30px',
                                             'borderRadius': '50%', 'display': 'flex', 'alignItems': 'center',
                                             'justifyContent': 'center', 'fontWeight': 'bold', 'flexShrink': '0'}),
                         html.Div([
-                            html.H4("🔴 HOJE: Pausar Criativos de Baixa Performance", style={'marginBottom': '5px'}),
+                            html.H4("HOJE: Pausar Criativos de Baixa Performance", style={'marginBottom': '5px'}),
                             html.P(f"Pausar imediatamente os {matrix['pause']['count']} criativos classificados como 'PAUSAR'. Economia: ${matrix['pause']['expected_savings']:,.2f}",
                                   style={'color': '#a0aec0', 'margin': '0'})
                         ], style={'marginLeft': '15px'})
@@ -1782,7 +1779,7 @@ tabs = dcc.Tabs([
                                             'borderRadius': '50%', 'display': 'flex', 'alignItems': 'center',
                                             'justifyContent': 'center', 'fontWeight': 'bold', 'flexShrink': '0'}),
                         html.Div([
-                            html.H4("🟡 ESTA SEMANA: Aumentar Budget dos Vencedores", style={'marginBottom': '5px'}),
+                            html.H4("ESTA SEMANA: Aumentar Budget dos Vencedores", style={'marginBottom': '5px'}),
                             html.P(f"Incrementar em 30-50% o investimento nos {matrix['scale']['count']} criativos de alta performance.",
                                   style={'color': '#a0aec0', 'margin': '0'})
                         ], style={'marginLeft': '15px'})
@@ -1794,7 +1791,7 @@ tabs = dcc.Tabs([
                                             'borderRadius': '50%', 'display': 'flex', 'alignItems': 'center',
                                             'justifyContent': 'center', 'fontWeight': 'bold', 'flexShrink': '0'}),
                         html.Div([
-                            html.H4("🟢 PRÓXIMAS 2 SEMANAS: Criar Variações dos Top 10", style={'marginBottom': '5px'}),
+                            html.H4("PRÓXIMAS 2 SEMANAS: Criar Variações dos Top 10", style={'marginBottom': '5px'}),
                             html.P("Desenvolver 3 variações de cada um dos 10 melhores criativos, testando elementos isolados.",
                                   style={'color': '#a0aec0', 'margin': '0'})
                         ], style={'marginLeft': '15px'})
@@ -1806,7 +1803,7 @@ tabs = dcc.Tabs([
                                             'borderRadius': '50%', 'display': 'flex', 'alignItems': 'center',
                                             'justifyContent': 'center', 'fontWeight': 'bold', 'flexShrink': '0'}),
                         html.Div([
-                            html.H4("📊 CONTÍNUO: Implementar Frequência Cap", style={'marginBottom': '5px'}),
+                            html.H4("CONTÍNUO: Implementar Frequência Cap", style={'marginBottom': '5px'}),
                             html.P(f"Configurar frequency cap na faixa ótima \"{freq['optimal_frequency']}\" para evitar saturação.",
                                   style={'color': '#a0aec0', 'margin': '0'})
                         ], style={'marginLeft': '15px'})
@@ -1818,7 +1815,7 @@ tabs = dcc.Tabs([
                                             'borderRadius': '50%', 'display': 'flex', 'alignItems': 'center',
                                             'justifyContent': 'center', 'fontWeight': 'bold', 'flexShrink': '0'}),
                         html.Div([
-                            html.H4("🎯 PRÓXIMO MÊS: Expandir Targeting Vencedor", style={'marginBottom': '5px'}),
+                            html.H4("PRÓXIMO MÊS: Expandir Targeting Vencedor", style={'marginBottom': '5px'}),
                             html.P(f"Criar lookalike audiences baseadas nas conversões com targeting \"{patterns['top_targeting']}\".",
                                   style={'color': '#a0aec0', 'margin': '0'})
                         ], style={'marginLeft': '15px'})
@@ -1829,7 +1826,7 @@ tabs = dcc.Tabs([
             
             # Footer
             html.Div([
-                html.P("📊 Relatório gerado automaticamente por Marketing Science Analysis", style={'textAlign': 'center', 'color': '#718096'}),
+                html.P("Relatório gerado automaticamente por Marketing Science Analysis", style={'textAlign': 'center', 'color': '#718096'}),
                 html.P("Meta Ads Creative Performance Dashboard", style={'textAlign': 'center', 'color': '#718096'})
             ], style={'marginTop': '40px', 'padding': '20px', 'borderTop': '1px solid rgba(255,255,255,0.1)'})
             
@@ -1898,10 +1895,10 @@ def update_dashboard(campaigns, adsets, placements, advantage, objectives, targe
     kpis = html.Div([
         html.H2("Dashboard Principal", className="section-title"),
         html.Div([
-            create_kpi_card("💰", f"R$ {total_spend:,.0f}", "INVESTIMENTO TOTAL", f"{num_creatives} creatives", "purple"),
-            create_kpi_card("🎯", f"{total_conversions:,.0f}", "CONVERSÕES", f"CPA: R$ {avg_cpa:.2f}", "blue"),
-            create_kpi_card("📊", f"{avg_ctr:.2f}%", "CTR MÉDIO", f"CPC: R$ {avg_cpc:.2f}", "yellow"),
-            create_kpi_card("📈", f"{overall_roas:.2f}x", "ROAS MÉDIO", f"CPM: R$ {avg_cpm:.2f}", "green"),
+            create_kpi_card("", f"US$ {total_spend:,.0f}", "INVESTIMENTO TOTAL", f"{num_creatives} creatives", "purple"),
+            create_kpi_card("", f"{total_conversions:,.0f}", "CONVERSÕES", f"CPA: US$ {avg_cpa:.2f}", "blue"),
+            create_kpi_card("", f"{avg_ctr:.2f}%", "CTR MÉDIO", f"CPC: US$ {avg_cpc:.2f}", "yellow"),
+            create_kpi_card("", f"{overall_roas:.2f}x", "ROAS MÉDIO", f"CPM: US$ {avg_cpm:.2f}", "green"),
         ], className="kpi-container-main")
     ], className="dashboard-section")
     
@@ -1992,9 +1989,9 @@ def update_dashboard(campaigns, adsets, placements, advantage, objectives, targe
             'Impressions': f"{row['Impressions']:,.0f}",
             'Clicks': f"{row['Clicks']:,.0f}",
             'Conv': f"{row['Conversions']:,.0f}",
-            'Spent': f"R$ {row['Amount spent']:,.2f}",
+            'Spent': f"US$ {row['Amount spent']:,.2f}",
             'CTR': f"{row['CTR']:.2f}%",
-            'CPA': f"R$ {row['CPA']:.2f}",
+            'CPA': f"US$ {row['CPA']:.2f}",
             'ROAS': f"{row['ROAS']:.2f}x"
         })
     
@@ -2013,7 +2010,7 @@ def update_dashboard(campaigns, adsets, placements, advantage, objectives, targe
     
     # Criar tabela de creatives
     creatives_table = html.Div([
-        html.H3("📋 Indicadores por Creative", className="chart-title"),
+        html.H3("Indicadores por Creative", className="chart-title"),
         html.P(f"Exibindo {len(filtered_df)} creatives", style={'color': '#6b7280', 'marginBottom': '16px'}),
         dash_table.DataTable(
             id='creatives-datatable',
@@ -2070,19 +2067,4 @@ def update_dashboard(campaigns, adsets, placements, advantage, objectives, targe
 # INICIAR APP
 # ============================================
 if __name__ == '__main__':
-    print("\n" + "="*70)
-    print("🚀 Meta Ads Creative Performance Dashboard - VERSÃO COMPLETA")
-    print("="*70)
-    print("\n📊 Dashboard iniciado!")
-    print("🌐 Acesse: http://127.0.0.1:8050")
-    print("\n📋 Abas disponíveis:")
-    print("   1. Dashboard Principal")
-    print("   2. Top Creatives")
-    print("   3. Relatório Marketing Science (INTEGRADO)")
-    print("   4. Ações Recomendadas")
-    print("   5. Padrões Vencedores")
-    print("   6. Insights")
-    print("   7. 📑 RELATÓRIO COMPLETO (NOVO!)")
-    print("\n" + "="*70 + "\n")
-    
     app.run(debug=True, port=8050)

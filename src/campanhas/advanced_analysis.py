@@ -1,7 +1,4 @@
-"""
-Módulo de Análise Avançada de Marketing Science
-Relatório completo com metodologias científicas
-"""
+"""Análises dos criativos: fatores do ROAS, comparação entre grupos, lift por segmento, regressão e cenários."""
 
 import pandas as pd
 import numpy as np
@@ -9,7 +6,8 @@ from scipy import stats
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold, cross_val_score
+from sklearn.pipeline import make_pipeline
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -64,21 +62,23 @@ class MarketingScienceAnalyzer:
         # Normalizar features
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
-        
-        # Modelo 1: Regressão Ridge
+
+        # Base inteira só para ler coeficientes e importâncias; o R² vem da validação cruzada
         ridge = Ridge(alpha=1.0)
-        ridge.fit(X_scaled, y)
-        ridge_scores = cross_val_score(ridge, X_scaled, y, cv=5, scoring='r2')
-        
-        # Modelo 2: Random Forest para importância
         rf = RandomForestRegressor(n_estimators=100, random_state=42, max_depth=10)
-        rf.fit(X_scaled, y)
-        rf_scores = cross_val_score(rf, X_scaled, y, cv=5, scoring='r2')
-        
-        # Modelo 3: Gradient Boosting
         gb = GradientBoostingRegressor(n_estimators=100, random_state=42, max_depth=5)
-        gb.fit(X_scaled, y)
-        gb_scores = cross_val_score(gb, X_scaled, y, cv=5, scoring='r2')
+        for modelo in (ridge, rf, gb):
+            modelo.fit(X_scaled, y)
+
+        # O scaler fica dentro do Pipeline para ser ajustado só nas dobras de treino
+        cv = KFold(n_splits=5, shuffle=True, random_state=42)
+
+        def r2_validacao_cruzada(modelo):
+            return cross_val_score(make_pipeline(StandardScaler(), modelo), X, y, cv=cv, scoring='r2')
+
+        ridge_scores = r2_validacao_cruzada(Ridge(alpha=1.0))
+        rf_scores = r2_validacao_cruzada(RandomForestRegressor(n_estimators=100, random_state=42, max_depth=10))
+        gb_scores = r2_validacao_cruzada(GradientBoostingRegressor(n_estimators=100, random_state=42, max_depth=5))
         
         # Calcular importância combinada
         feature_names_readable = [
@@ -147,12 +147,13 @@ class MarketingScienceAnalyzer:
         return {'p_value': 1.0, 'is_significant': False}
     
     # =========================================================================
-    # 2. ANÁLISE DE CAUSALIDADE
+    # 2. COMPARAÇÃO ENTRE GRUPOS
     # =========================================================================
     
-    def difference_in_differences(self):
+    def comparar_advantage_placements(self):
         """
-        Implementa Difference-in-Differences para Advantage+ Placements
+        Compara criativos com e sem Advantage+ Placements: diferença de médias e teste t.
+        A base é um corte só (sem antes e depois), então isso mostra associação, não efeito causal.
         """
         results = {}
         
@@ -217,10 +218,9 @@ class MarketingScienceAnalyzer:
         
         return results
     
-    def causal_impact_analysis(self):
+    def diferenca_por_objetivo(self):
         """
-        Análise de Causal Impact simulada
-        Estima o impacto contrafactual
+        Diferença de ROAS e CPA de cada objetivo de campanha contra a média dos demais.
         """
         results = {}
         
@@ -1271,7 +1271,7 @@ class MarketingScienceAnalyzer:
                 'quartile_data': saturation_data,
                 'has_saturation': q4_roas < q1_roas * 0.9,
                 'saturation_level': 'Alto' if q4_roas < q1_roas * 0.7 else 'Moderado' if q4_roas < q1_roas * 0.9 else 'Baixo',
-                'optimal_spend_range': f"R$ {saturation_data[1]['avg_spend']:.2f} - R$ {saturation_data[2]['avg_spend']:.2f}",
+                'optimal_spend_range': f"US$ {saturation_data[1]['avg_spend']:.2f} - US$ {saturation_data[2]['avg_spend']:.2f}",
                 'recommendation': 'Redistribuir orçamento para faixas mais eficientes' if q4_roas < q1_roas * 0.9 
                                  else 'Orçamento bem distribuído'
             }
@@ -1315,11 +1315,11 @@ class MarketingScienceAnalyzer:
         # 1. Impacto no ROAS
         report['roas_impact'] = self.analyze_roas_impact()
         
-        # 2. Difference-in-Differences
-        report['diff_in_diff'] = self.difference_in_differences()
+        # 2. Com e sem Advantage+ Placements
+        report['comparacao_advantage'] = self.comparar_advantage_placements()
         
-        # 3. Causal Impact
-        report['causal_impact'] = self.causal_impact_analysis()
+        # 3. Diferença por objetivo de campanha
+        report['diferenca_por_objetivo'] = self.diferenca_por_objetivo()
         
         # 4. Frequency x CPA
         report['frequency_analysis'] = self.frequency_cpa_analysis()
@@ -1369,7 +1369,7 @@ class MarketingScienceAnalyzer:
                 },
                 {
                     'finding': f"Advantage+ Placements {'aumenta' if report['advantage_uplift']['summary']['roas_uplift'] > 0 else 'diminui'} o ROAS em {abs(report['advantage_uplift']['summary']['roas_uplift']):.1f}%",
-                    'impact': 'Estatisticamente significativo' if report['diff_in_diff']['ROAS']['is_significant'] else 'Não significativo'
+                    'impact': 'Estatisticamente significativo' if report['comparacao_advantage']['ROAS']['is_significant'] else 'Não significativo'
                 },
                 {
                     'finding': f"Frequência e CPA têm correlação {report['frequency_analysis']['correlation']['strength'].lower()}",
@@ -1392,7 +1392,7 @@ class MarketingScienceAnalyzer:
         return summary
     
     def _generate_priority_recommendations(self, report):
-        """Gera recomendações prioritárias baseadas nos dados reais"""
+        """Gera as recomendações prioritárias a partir das análises."""
         recommendations = []
         
         # 1. Advantage+ Placements - baseado no impacto real

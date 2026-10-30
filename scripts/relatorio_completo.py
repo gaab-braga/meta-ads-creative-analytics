@@ -1,8 +1,4 @@
-"""
-📊 RELATÓRIO COMPLETO DE MARKETING SCIENCE
-Meta Ads Creative Performance Analysis
-Gerado em: Dezembro 2024
-"""
+"""Gera o relatório HTML consolidado das análises em reports/."""
 
 import pandas as pd
 import numpy as np
@@ -571,14 +567,14 @@ html_content = f'''<!DOCTYPE html>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>📊 Relatório de Marketing Science</h1>
+            <h1>Relatório de Marketing Science</h1>
             <p class="subtitle">Meta Ads Creative Performance Analysis</p>
             <p class="date">Gerado em: {datetime.now().strftime('%d/%m/%Y às %H:%M')}</p>
         </div>
 
         <!-- RESUMO EXECUTIVO -->
         <div class="section">
-            <h2 class="section-title"><span class="icon">📋</span> Resumo Executivo</h2>
+            <h2 class="section-title"><span class="icon"></span> Resumo Executivo</h2>
             
             <div class="executive-summary">
                 <p>
@@ -625,7 +621,7 @@ html_content = f'''<!DOCTYPE html>
 
         <!-- 10 DESCOBERTAS PRINCIPAIS -->
         <div class="section">
-            <h2 class="section-title"><span class="icon">🔍</span> 10 Descobertas Principais</h2>
+            <h2 class="section-title"><span class="icon"></span> 10 Descobertas Principais</h2>
             
             <div class="discovery-list">
                 <div class="discovery-item success">
@@ -722,39 +718,39 @@ html_content = f'''<!DOCTYPE html>
 
         <!-- 5 OPORTUNIDADES DE OTIMIZAÇÃO -->
         <div class="section">
-            <h2 class="section-title"><span class="icon">🎯</span> 5 Oportunidades de Otimização</h2>
+            <h2 class="section-title"><span class="icon"></span> 5 Oportunidades de Otimização</h2>
             
             <div class="action-grid">
                 <div class="action-card">
-                    <h4>💰 1. Realocar Budget para Top Performers</h4>
+                    <h4>1. Realocar Budget para Top Performers</h4>
                     <p>Transferir investimento dos {decision_summary.get('PAUSAR', 0)} criativos de baixa performance 
                     para os {decision_summary.get('ESCALAR', 0)} de alta performance.</p>
                     <div class="impact">Economia estimada: ${potential_savings:,.2f}</div>
                 </div>
                 
                 <div class="action-card">
-                    <h4>📍 2. Priorizar Placement Vencedor</h4>
+                    <h4>2. Priorizar Placement Vencedor</h4>
                     <p>Concentrar novos criativos no placement "{placement_analysis.index[0]}" 
                     que apresenta ROAS {((placement_analysis.iloc[0]['ROAS Médio'] / avg_roas - 1) * 100):.0f}% acima da média.</p>
                     <div class="impact">Potencial: +{((placement_analysis.iloc[0]['ROAS Médio'] / avg_roas - 1) * 100):.0f}% ROAS</div>
                 </div>
                 
                 <div class="action-card">
-                    <h4>🎯 3. Otimizar Targeting</h4>
+                    <h4>3. Otimizar Targeting</h4>
                     <p>Expandir uso de targeting "{targeting_analysis.index[0]}" 
                     e testar lookalikes baseados nos top performers.</p>
                     <div class="impact">ROAS alvo: {targeting_analysis.iloc[0]['ROAS Médio']:.2f}x</div>
                 </div>
                 
                 <div class="action-card">
-                    <h4>📊 4. Controle de Frequência</h4>
+                    <h4>4. Controle de Frequência</h4>
                     <p>Implementar caps de frequência na faixa ótima "{df.groupby('Freq_Group')['ROAS'].mean().idxmax()}" 
                     para evitar saturação de audiência.</p>
                     <div class="impact">Redução de waste estimada: 15-20%</div>
                 </div>
                 
                 <div class="action-card">
-                    <h4>🧪 5. Programa de Testes A/B</h4>
+                    <h4>5. Programa de Testes A/B</h4>
                     <p>Estruturar testes para os {decision_summary.get('TESTAR', 0)} criativos em zona de incerteza, 
                     validando elementos de copy, visual e CTA.</p>
                     <div class="impact">{decision_summary.get('TESTAR', 0)} criativos para otimizar</div>
@@ -764,11 +760,11 @@ html_content = f'''<!DOCTYPE html>
 
         <!-- 3 RECOMENDAÇÕES DE MÍDIA -->
         <div class="section">
-            <h2 class="section-title"><span class="icon">📺</span> 3 Recomendações de Mídia</h2>
+            <h2 class="section-title"><span class="icon"></span> 3 Recomendações de Mídia</h2>
             
             <div class="action-grid">
                 <div class="action-card urgent">
-                    <h4>🚀 URGENTE: Escalar Vencedores</h4>
+                    <h4>URGENTE: Escalar Vencedores</h4>
                     <p><strong>Ação:</strong> Aumentar budget em 50% para os {decision_summary.get('ESCALAR', 0)} criativos 
                     classificados para escalar imediatamente.</p>
                     <p><strong>Prazo:</strong> Próximos 7 dias</p>
@@ -786,7 +782,7 @@ html_content = f'''<!DOCTYPE html>
                 </div>
                 
                 <div class="action-card">
-                    <h4>🔬 ESTRATÉGICA: Expandir Testes</h4>
+                    <h4>ESTRATÉGICA: Expandir Testes</h4>
                     <p><strong>Ação:</strong> Criar variações dos top 10 criativos para teste, 
                     mantendo elementos vencedores e testando variáveis isoladas.</p>
                     <p><strong>Prazo:</strong> Próximos 14 dias</p>
@@ -798,10 +794,10 @@ html_content = f'''<!DOCTYPE html>
 
         <!-- PADRÕES DOS CREATIVES VENCEDORES -->
         <div class="section">
-            <h2 class="section-title"><span class="icon">🏆</span> Padrões dos Creatives Vencedores</h2>
+            <h2 class="section-title"><span class="icon"></span> Padrões dos Creatives Vencedores</h2>
             
             <div class="winner-profile">
-                <h3>🥇 DNA do Creative Vencedor</h3>
+                <h3>DNA do Creative Vencedor</h3>
                 <p style="color: #a0aec0; margin-bottom: 20px;">
                     Baseado na análise dos {len(top_creatives)} criativos top performers (top 10% por ROAS)
                 </p>
@@ -843,7 +839,7 @@ html_content = f'''<!DOCTYPE html>
             </div>
             
             <div class="table-container" style="margin-top: 30px;">
-                <h4 style="margin-bottom: 15px;">📊 Comparativo: Vencedores vs Média</h4>
+                <h4 style="margin-bottom: 15px;">Comparativo: Vencedores vs Média</h4>
                 <table>
                     <thead>
                         <tr>
@@ -885,7 +881,7 @@ html_content = f'''<!DOCTYPE html>
 
         <!-- MATRIZ DE DECISÃO -->
         <div class="section">
-            <h2 class="section-title"><span class="icon">🎲</span> Matriz de Decisão</h2>
+            <h2 class="section-title"><span class="icon"></span> Matriz de Decisão</h2>
             
             <div class="matrix-grid">
                 <div class="matrix-card scale">
@@ -913,7 +909,7 @@ html_content = f'''<!DOCTYPE html>
 
         <!-- PREVISÃO 30 DIAS -->
         <div class="section">
-            <h2 class="section-title"><span class="icon">🔮</span> Previsão para os Próximos 30 Dias</h2>
+            <h2 class="section-title"><span class="icon"></span> Previsão para os Próximos 30 Dias</h2>
             
             <div class="forecast-box">
                 <h3>Projeção de Conversões (30 dias)</h3>
@@ -936,12 +932,12 @@ html_content = f'''<!DOCTYPE html>
                 </div>
                 
                 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: left;">
-                    <h4 style="margin-bottom: 15px;">📈 Premissas da Previsão:</h4>
+                    <h4 style="margin-bottom: 15px;">Premissas da Previsão:</h4>
                     <ul style="color: #a0aec0; list-style: none;">
-                        <li>✓ Cenário base assume manutenção do budget e estratégia atual</li>
-                        <li>✓ Cenário otimista assume implementação das recomendações de escala</li>
-                        <li>✓ Cenário pessimista considera sazonalidade e saturação</li>
-                        <li>✓ Modelo baseado em tendência histórica com growth rate de 5%</li>
+                        <li>Cenário base assume manutenção do budget e estratégia atual</li>
+                        <li>Cenário otimista assume implementação das recomendações de escala</li>
+                        <li>Cenário pessimista considera sazonalidade e saturação</li>
+                        <li>Modelo baseado em tendência histórica com growth rate de 5%</li>
                     </ul>
                 </div>
             </div>
@@ -949,13 +945,13 @@ html_content = f'''<!DOCTYPE html>
 
         <!-- AÇÕES IMEDIATAS -->
         <div class="section">
-            <h2 class="section-title"><span class="icon">⚡</span> Ações Imediatas Recomendadas</h2>
+            <h2 class="section-title"><span class="icon"></span> Ações Imediatas Recomendadas</h2>
             
             <div class="discovery-list">
                 <div class="discovery-item urgent" style="border-left-color: #fa3e3e; background: rgba(250, 62, 62, 0.15);">
                     <div class="discovery-number" style="background: #fa3e3e;">1</div>
                     <div class="discovery-content">
-                        <h4>🔴 HOJE: Pausar Criativos de Baixa Performance</h4>
+                        <h4>HOJE: Pausar Criativos de Baixa Performance</h4>
                         <p>Pausar imediatamente os {decision_summary.get('PAUSAR', 0)} criativos classificados como "PAUSAR". 
                         Economia imediata de ${potential_savings:,.2f} que pode ser realocada para top performers.</p>
                     </div>
@@ -964,7 +960,7 @@ html_content = f'''<!DOCTYPE html>
                 <div class="discovery-item" style="border-left-color: #ffc107; background: rgba(255, 193, 7, 0.15);">
                     <div class="discovery-number" style="background: #ffc107; color: #000;">2</div>
                     <div class="discovery-content">
-                        <h4>🟡 ESTA SEMANA: Aumentar Budget dos Vencedores</h4>
+                        <h4>ESTA SEMANA: Aumentar Budget dos Vencedores</h4>
                         <p>Incrementar em 30-50% o investimento nos {decision_summary.get('ESCALAR', 0)} criativos de alta performance.
                         Monitorar métricas diariamente para ajustes.</p>
                     </div>
@@ -973,7 +969,7 @@ html_content = f'''<!DOCTYPE html>
                 <div class="discovery-item success">
                     <div class="discovery-number" style="background: #42b72a;">3</div>
                     <div class="discovery-content">
-                        <h4>🟢 PRÓXIMAS 2 SEMANAS: Criar Variações dos Top 10</h4>
+                        <h4>PRÓXIMAS 2 SEMANAS: Criar Variações dos Top 10</h4>
                         <p>Desenvolver 3 variações de cada um dos 10 melhores criativos, testando elementos isolados 
                         (headline, visual, CTA). Manter DNA vencedor identificado.</p>
                     </div>
@@ -982,7 +978,7 @@ html_content = f'''<!DOCTYPE html>
                 <div class="discovery-item">
                     <div class="discovery-number">4</div>
                     <div class="discovery-content">
-                        <h4>📊 CONTÍNUO: Implementar Frequência Cap</h4>
+                        <h4>CONTÍNUO: Implementar Frequência Cap</h4>
                         <p>Configurar frequency cap na faixa ótima "{df.groupby('Freq_Group')['ROAS'].mean().idxmax()}" 
                         para todos os adsets, evitando saturação de audiência.</p>
                     </div>
@@ -991,7 +987,7 @@ html_content = f'''<!DOCTYPE html>
                 <div class="discovery-item">
                     <div class="discovery-number">5</div>
                     <div class="discovery-content">
-                        <h4>🎯 PRÓXIMO MÊS: Expandir Targeting Vencedor</h4>
+                        <h4>PRÓXIMO MÊS: Expandir Targeting Vencedor</h4>
                         <p>Criar lookalike audiences baseadas nas conversões dos top performers com targeting 
                         "{targeting_analysis.index[0]}". Testar expansões de 1%, 2% e 5%.</p>
                     </div>
@@ -1000,7 +996,7 @@ html_content = f'''<!DOCTYPE html>
                 <div class="discovery-item">
                     <div class="discovery-number">6</div>
                     <div class="discovery-content">
-                        <h4>📍 PRÓXIMO MÊS: Priorizar Placement Vencedor</h4>
+                        <h4>PRÓXIMO MÊS: Priorizar Placement Vencedor</h4>
                         <p>Concentrar 70% dos novos criativos no placement "{placement_analysis.index[0]}" 
                         que demonstrou ROAS superior. Manter 30% para testes em outros placements.</p>
                     </div>
@@ -1009,7 +1005,7 @@ html_content = f'''<!DOCTYPE html>
                 <div class="discovery-item">
                     <div class="discovery-number">7</div>
                     <div class="discovery-content">
-                        <h4>🔄 SEMANAL: Review de Performance</h4>
+                        <h4>SEMANAL: Review de Performance</h4>
                         <p>Estabelecer revisão semanal da matriz de decisão para reclassificar criativos 
                         e ajustar estratégia baseada em dados atualizados.</p>
                     </div>
@@ -1019,7 +1015,7 @@ html_content = f'''<!DOCTYPE html>
 
         <!-- Footer -->
         <div class="footer">
-            <p>📊 Relatório gerado automaticamente por Marketing Science Analysis</p>
+            <p>Relatório gerado automaticamente por Marketing Science Analysis</p>
             <p>Meta Ads Creative Performance Dashboard</p>
             <p style="margin-top: 10px; font-size: 0.9em;">
                 {datetime.now().strftime('%d/%m/%Y %H:%M')} | Total de {total_creatives} criativos analisados
@@ -1035,18 +1031,18 @@ with open(RELATORIOS / 'relatorio_marketing_science_completo.html', 'w', encodin
     f.write(html_content)
 
 print("=" * 70)
-print("📊 RELATÓRIO COMPLETO DE MARKETING SCIENCE GERADO!")
+print("RELATÓRIO COMPLETO DE MARKETING SCIENCE GERADO!")
 print("=" * 70)
-print(f"\n✅ Arquivo: relatorio_marketing_science_completo.html")
-print("\n📋 Conteúdo do Relatório:")
-print("   1. ✓ Resumo Executivo")
-print("   2. ✓ 10 Descobertas Principais")
-print("   3. ✓ 5 Oportunidades de Otimização")
-print("   4. ✓ 3 Recomendações de Mídia")
-print("   5. ✓ Padrões dos Creatives Vencedores")
-print("   6. ✓ Matriz de Decisão")
-print("   7. ✓ Previsão para os Próximos 30 Dias")
-print("   8. ✓ Ações Imediatas Recomendadas")
+print(f"\nArquivo: relatorio_marketing_science_completo.html")
+print("\nConteúdo do Relatório:")
+print("   1. Resumo Executivo")
+print("   2. 10 Descobertas Principais")
+print("   3. 5 Oportunidades de Otimização")
+print("   4. 3 Recomendações de Mídia")
+print("   5. Padrões dos Creatives Vencedores")
+print("   6. Matriz de Decisão")
+print("   7. Previsão para os Próximos 30 Dias")
+print("   8. Ações Imediatas Recomendadas")
 print("\n" + "=" * 70)
-print("🌐 Abra o arquivo HTML no navegador para visualizar!")
+print("Abra o arquivo HTML no navegador para visualizar!")
 print("=" * 70)
