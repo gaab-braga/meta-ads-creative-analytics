@@ -1,36 +1,16 @@
-# Python
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-*.env
-venv/
-env/
+.venv/
+*.egg-info/
+.pytest_cache/
+.env
 
+# relatórios gerados pelos scripts
+reports/*.html
 
-# Dados fonte e arquivos sensíveis
-meta_creatives_sample - meta_creatives_sample.csv.csv
-*.csv
-*.xlsx
-*.xls
-*.sav
-*.parquet
-*.feather
-*.json
+# anotações pessoais
 prompts.md
 
-# Vídeos e mídia pesada
-assets/*.mp4
-assets/*.mov
-assets/*.avi
-
-# Relatórios gerados
-*.html
-*.pdf
-
-# Outros
 .DS_Store
-Thumbs.db
-.idea/
 .vscode/
-*.log
+.idea/

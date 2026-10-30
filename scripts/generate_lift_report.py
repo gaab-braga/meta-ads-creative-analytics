@@ -10,7 +10,7 @@ from datetime import datetime
 import json
 
 # Importar data_processor para garantir métricas consistentes
-from data_processor import load_and_process_data
+from campanhas.data_processor import load_and_process_data
 
 
 def calculate_lift_with_ci(group_values, all_values, n_bootstrap=1000, ci=0.95):
@@ -964,9 +964,9 @@ if __name__ == "__main__":
     import os
     
     # Caminhos
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    csv_path = os.path.join(base_path, "meta_creatives_sample - meta_creatives_sample.csv.csv")
-    output_path = os.path.join(base_path, "relatorio_lift_analysis_dados_reais.html")
+    from campanhas.paths import DADOS, RELATORIOS
+    csv_path = DADOS
+    output_path = RELATORIOS / "relatorio_lift_analysis.html"
     
     # Gerar relatório
     results = generate_lift_report(csv_path, output_path)

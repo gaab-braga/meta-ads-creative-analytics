@@ -13,11 +13,12 @@ import pandas as pd
 import numpy as np
 
 # Importar módulos locais
-from data_processor import (
+from campanhas.paths import DADOS
+from campanhas.data_processor import (
     load_and_process_data, get_summary_metrics, identify_top_creatives,
     analyze_patterns, generate_recommendations, generate_insights
 )
-from advanced_analysis import MarketingScienceAnalyzer
+from campanhas.advanced_analysis import MarketingScienceAnalyzer
 
 # ============================================
 # CONFIGURAÇÃO DO APP
@@ -35,7 +36,7 @@ app.title = "Meta Ads Creative Performance Dashboard"
 # ============================================
 # CARREGAR DADOS
 # ============================================
-CSV_PATH = "meta_creatives_sample - meta_creatives_sample.csv.csv"
+CSV_PATH = DADOS
 
 # Carregar e processar dados
 df = load_and_process_data(CSV_PATH)

@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "campanhas"
+version = "1.0.0"
+description = "Análise de criativos de Meta Ads e dashboard em Dash sobre uma amostra sintética"
+requires-python = ">=3.10"
+dependencies = [
+    "dash>=2.14",
+    "dash-bootstrap-components>=1.5",
+    "plotly>=5.18",
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "scikit-learn>=1.3",
+    "scipy>=1.11",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"campanhas.dashboard" = ["assets/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

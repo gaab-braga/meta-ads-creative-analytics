@@ -14,13 +14,14 @@ from plotly.subplots import make_subplots
 import warnings
 warnings.filterwarnings('ignore')
 
-from data_processor import load_and_process_data
-from advanced_analysis import MarketingScienceAnalyzer
+from campanhas.paths import DADOS, RELATORIOS
+from campanhas.data_processor import load_and_process_data
+from campanhas.advanced_analysis import MarketingScienceAnalyzer
 
 # ============================================
 # CONFIGURAÇÕES
 # ============================================
-CSV_PATH = "meta_creatives_sample - meta_creatives_sample.csv.csv"
+CSV_PATH = DADOS
 CHART_TEMPLATE = 'plotly_dark'
 
 COLORS = {
@@ -134,7 +135,7 @@ fig_impact.update_layout(
     paper_bgcolor='rgba(0,0,0,0)'
 )
 
-fig_impact.write_html('report_impact_roas.html')
+fig_impact.write_html(RELATORIOS / 'report_impact_roas.html')
 print("\n   📁 Gráfico salvo: report_impact_roas.html")
 
 # ============================================
@@ -210,7 +211,7 @@ fig_did.update_layout(
     paper_bgcolor='rgba(0,0,0,0)'
 )
 
-fig_did.write_html('report_diff_in_diff.html')
+fig_did.write_html(RELATORIOS / 'report_diff_in_diff.html')
 print("   📁 Gráfico salvo: report_diff_in_diff.html")
 
 # ============================================
@@ -299,7 +300,7 @@ fig_freq.update_layout(
     paper_bgcolor='rgba(0,0,0,0)'
 )
 
-fig_freq.write_html('report_frequency_cpa.html')
+fig_freq.write_html(RELATORIOS / 'report_frequency_cpa.html')
 print("   📁 Gráfico salvo: report_frequency_cpa.html")
 
 # ============================================
@@ -485,7 +486,7 @@ fig_matrix.update_layout(
     paper_bgcolor='rgba(0,0,0,0)'
 )
 
-fig_matrix.write_html('report_decision_matrix.html')
+fig_matrix.write_html(RELATORIOS / 'report_decision_matrix.html')
 print("\n   📁 Gráfico salvo: report_decision_matrix.html")
 
 # ============================================
@@ -597,7 +598,7 @@ fig_forecast.update_layout(
     paper_bgcolor='rgba(0,0,0,0)'
 )
 
-fig_forecast.write_html('report_forecast.html')
+fig_forecast.write_html(RELATORIOS / 'report_forecast.html')
 print("   📁 Gráfico salvo: report_forecast.html")
 
 # ============================================
